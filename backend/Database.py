@@ -9,7 +9,7 @@ class Account(db.Model):
     lastName = db.Column(db.String(32), nullable=False)
 
 class Department(db.Model):
-    departmentID = db.Column(db.Integer(), primary_key=True, nullable=False)
+    departmentID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
     name = db.Column(db.String(32), nullable=False)
 
 class DepartmentMember(db.Model):
@@ -31,7 +31,8 @@ class Incident(db.Model):
     timeCompleted = db.Column(db.DateTime())
 
 class IncidentUpdate(db.Model):
-    updateID = db.Column(db.Integer(), primary_key=True, nullable=False)
+    updateID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
     technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
     date = db.Column(db.DateTime())
     description = db.Column(db.String(250))
