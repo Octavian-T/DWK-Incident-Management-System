@@ -27,6 +27,15 @@
     margin-bottom: 20px;
 }
 
+.background-container {
+    width: 400px;
+    padding: 20px;
+    background-color: var(--backgroundColour);
+    display: inline-block;
+    text-align: center;
+    border-radius: 23px;
+}
+
 .content-container {
     text-align: center;
 }

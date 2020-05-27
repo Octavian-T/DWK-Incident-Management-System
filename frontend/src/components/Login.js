@@ -9,8 +9,8 @@ function Login() {
     <>
       <h2 className="subheading">Incident Reporting</h2>
 
-      <div className="login-container">
-        <img src={lock} />
+      <div className="background-container">
+        <img src={lock} alt=""/>
         <form>
           <input type="text" placeholder="Username"></input>
           <br></br>

@@ -5,7 +5,7 @@ import { Switch, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
-import ViewIncidents from './components/ViewIncidents';
+import Incident from './components/Incident';
 import Error from './components/Error';
 
 import './components/css/Main.css';
@@ -23,7 +23,7 @@ function App() {
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/login" component={Login} />
-          <Route path="/incidents" component={ViewIncidents} />
+          <Route path="/incidents" component={Incident} />
           <Route component={Error} />
         </Switch>
       </div>
