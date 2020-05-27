@@ -14,11 +14,11 @@ class Department(db.Model):
 
 class DepartmentMember(db.Model):
     username = db.Column(db.String(32), db.ForeignKey('account.username'), primary_key=True, unique=True, nullable=False)
-    departmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'), primary_key=True, nullable=False)
+    departmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'), primary_key=True, unique=True, nullable=False)
     role = db.Column(db.String(32))
 
 class Incident(db.Model):
-    incidentID = db.Column(db.Integer(), primary_key=True, nullable=False)
+    incidentID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
     raisedID = db.Column(db.String(32), db.ForeignKey('account.username'))
     affectedID = db.Column(db.String(32), db.ForeignKey('account.username'))
     investigatingDepartmentID = db.Column(db.String(32), db.ForeignKey('department.departmentID'))
@@ -32,6 +32,6 @@ class Incident(db.Model):
 
 class IncidentUpdate(db.Model):
     updateID = db.Column(db.Integer(), primary_key=True, nullable=False)
-    technicianID = db.Column(db.String(32), db.ForeignKey('account.username'))
+    technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
     date = db.Column(db.DateTime())
     description = db.Column(db.String(250))
