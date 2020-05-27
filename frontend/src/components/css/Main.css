@@ -1,0 +1,30 @@
+:root {
+    --primary: #2B6670;
+    --secondary: #637E90;
+    --third: #77A7B0;
+    --fourth: #E5F2F0;
+    --backgroundColour: #E5E5E5;
+}
+
+.main-header {
+    background-color: var(--primary);
+    color: white;
+    margin: 0px;
+    padding: 24px 16px;
+}
+
+.main-header h1 {
+    margin: 0px;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.subheading {
+    color: var(--third);
+    font-weight: bold;
+    margin-top: 100px;
+}
+
+.content-container {
+    text-align: center;
+}

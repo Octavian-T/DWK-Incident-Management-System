@@ -14,7 +14,7 @@ class Department(db.Model):
 
 class DepartmentMember(db.Model):
     username = db.Column(db.String(32), db.ForeignKey('account.username'), primary_key=True, unique=True, nullable=False)
-    departmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'), primary_key=True, nullable=False)
+    departmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'), primary_key=True, unique=True, nullable=False)
     role = db.Column(db.String(32))
 
 class Incident(db.Model):
@@ -32,7 +32,7 @@ class Incident(db.Model):
 
 class IncidentUpdate(db.Model):
     updateID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
-    technicianID = db.Column(db.String(32), db.ForeignKey('account.username'))
-    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'))
+    technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
     date = db.Column(db.DateTime())
     description = db.Column(db.String(250))
