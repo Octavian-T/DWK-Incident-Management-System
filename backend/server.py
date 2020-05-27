@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+from Database import *
+
 app = Flask(__name__)
 
 app.config['JSON_SORT_KEYS'] = False
@@ -8,13 +10,6 @@ app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 
 db = SQLAlchemy(app)
-
-class Account(db.Model):
-    username = db.Column(db.String(32), primary_key=True)
-    password = db.Column(db.String(32))
-    firstName = db.Column(db.String(32))
-    lastName = db.Column(db.String(32))
-    role = db.Column(db.String(32))
 
 @app.route('/test')
 def test():
