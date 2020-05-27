@@ -2,12 +2,15 @@ import React from 'react';
 
 import './css/Login.css';
 
+import lock from './icons/lock.svg';
+
 function Login() {
   return (
     <>
       <h2 className="subheading">Incident Reporting</h2>
 
       <div className="login-container">
+        <img src={lock} />
         <form>
           <input type="text" placeholder="Username"></input>
           <br></br>

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Home from './components/Home';
@@ -15,9 +15,10 @@ function App() {
   return (
     <>
       <div className="main-header">
-        <h1>DWK PLC</h1>
+        <h1><Link to="/" id="headingLogo">DWK PLC</Link></h1>
       </div>
       
+      <Navbar />
       <div className="content-container">
         <Switch>
           <Route path="/" component={Home} exact />
