@@ -100,165 +100,183 @@ def get_incident(id):
 
 @app.route('/api/incident/<id>/updates', methods=['GET', 'POST'])
 def get_incident_updates(id):
-    if request.method == 'GET':
-        updates = IncidentUpdate.query.filter_by(incidentID = id).all()
-        if updates is not None:
-            all_updates = {'data':[]}
-            for update in updates:
-                this_update = {
-                    'updateID':update.updateID,
-                    'technicianID':update.technicianID,
-                    'incidentID':update.incidentID,
-                    'date':update.date,
-                    'description':update.description
-                }
-                all_updates['data'].append(this_update)
-            return all_updates
-        else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
-    elif request.method == 'POST':
-        if request.form is not None:
-            update = IncidentUpdate(technicianID = request.form['technicianID'], incidentID = request.form['incidentID'], date = datetime.datetime.now(), description = request.form['description'])
-            db.session.add(update)
-            db.session.commit()
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    if 'username' in session and check(session['username']):
+        if request.method == 'GET':
+            updates = IncidentUpdate.query.filter_by(incidentID = id).all()
+            if updates is not None:
+                all_updates = {'data':[]}
+                for update in updates:
+                    this_update = {
+                        'updateID':update.updateID,
+                        'technicianID':update.technicianID,
+                        'incidentID':update.incidentID,
+                        'date':update.date,
+                        'description':update.description
+                    }
+                    all_updates['data'].append(this_update)
+                return all_updates
+            else:
+                return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        elif request.method == 'POST':
+            if request.form is not None:
+                update = IncidentUpdate(technicianID = request.form['technicianID'], incidentID = request.form['incidentID'], date = datetime.datetime.now(), description = request.form['description'])
+                db.session.add(update)
+                db.session.commit()
+                return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            else:
+                return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
         else:
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
 #accounts
 
 @app.route('/api/account/<username>', methods = ['GET'])
 def get_account(username):
-    if username == 'all':
-        accounts = Account.query.all()
-        all_accounts = {'data':[]}
-        for account in accounts:
-            role = DepartmentMember.query.filter_by(username = account.username).first()
-            this_account = {
-                'username':account.username,
-                'firstName':account.firstName,
-                'lastName':account.lastName,
-                'role':role.role
-            }
-            all_accounts['data'].append(this_account)
-        return all_accounts
-    else:
-        account = Account.query.get(username)
-        if account is not None:
-            role = DepartmentMember.query.filter_by(username = account.username).first()
-            return {
-                'username':account.username,
-                'firstName':account.firstName,
-                'lastName':account.lastName,
-                'role':role.role
-            }
+    if 'username' in session and check(session['username']):
+        if username == 'all':
+            accounts = Account.query.all()
+            all_accounts = {'data':[]}
+            for account in accounts:
+                role = DepartmentMember.query.filter_by(username = account.username).first()
+                this_account = {
+                    'username':account.username,
+                    'firstName':account.firstName,
+                    'lastName':account.lastName,
+                    'role':role.role
+                }
+                all_accounts['data'].append(this_account)
+            return all_accounts
         else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+            account = Account.query.get(username)
+            if account is not None:
+                role = DepartmentMember.query.filter_by(username = account.username).first()
+                return {
+                    'username':account.username,
+                    'firstName':account.firstName,
+                    'lastName':account.lastName,
+                    'role':role.role
+                }
+            else:
+                return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+    else:
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
 @app.route('/api/account/<id>/incidents', methods=['GET'])
 def get_account_incidents(id):
-    incidents = Incident.query.filter_by(raisedID = id).all()
-    if incidents is not None:
-        all_incidents = {'data':[]}
-        for incident in incidents:
-            this_incident = {
-                'incidentID':incident.incidentID,
-                'raisedID':incident.raisedID,
-                'affectedID':incident.affectedID,
-                'investigatingDepartmentID':incident.investigatingDepartmentID,
-                'description':incident.description,
-                'timeRaised':incident.timeRaised,
-                'priority':incident.priority,
-                'severity':incident.severity,
-                'impact':incident.impact,
-                'status':incident.status,
-                'timeCompleted':incident.timeCompleted
-            }
-            all_incidents['data'].append(this_incident)
-        return all_incidents
+    if 'username' in session and check(session['username']):
+        incidents = Incident.query.filter_by(raisedID = id).all()
+        if incidents is not None:
+            all_incidents = {'data':[]}
+            for incident in incidents:
+                this_incident = {
+                    'incidentID':incident.incidentID,
+                    'raisedID':incident.raisedID,
+                    'affectedID':incident.affectedID,
+                    'investigatingDepartmentID':incident.investigatingDepartmentID,
+                    'description':incident.description,
+                    'timeRaised':incident.timeRaised,
+                    'priority':incident.priority,
+                    'severity':incident.severity,
+                    'impact':incident.impact,
+                    'status':incident.status,
+                    'timeCompleted':incident.timeCompleted
+                }
+                all_incidents['data'].append(this_incident)
+            return all_incidents
+        else:
+            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
 #department
 
 @app.route('/api/department/<id>', methods=['GET'])
 def get_department(id):
-    if id == 'all':
-        departments = Department.query.all()
-        all_departments = {'data':[]}
-        for department in departments:
-            this_department = {
-                'departmentID':department.departmentID,
-                'name':department.name
-            }
-            all_departments['data'].append(this_department)
-        return all_departments
-    else:
-        department = Department.query.get(id)
-        if department is not None:
-            return {
-                'departmentID':department.departmentID,
-                'name':department.name
-            }
+    if 'username' in session and check(session['username']):
+        if id == 'all':
+            departments = Department.query.all()
+            all_departments = {'data':[]}
+            for department in departments:
+                this_department = {
+                    'departmentID':department.departmentID,
+                    'name':department.name
+                }
+                all_departments['data'].append(this_department)
+            return all_departments
         else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+            department = Department.query.get(id)
+            if department is not None:
+                return {
+                    'departmentID':department.departmentID,
+                    'name':department.name
+                }
+            else:
+                return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+    else:
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
 @app.route('/api/department/<id>/members')
 def get_department_members(id):
-    members = DepartmentMember.query.filter_by(departmentID = id).all()
-    if members is not None:
-        all_members = {'data':[]}
-        for member in members:
-            current_member = Account.query.filter_by(username = member.username).first()
-            this_member = {
-                'username':current_member.username,
-                'firstName':current_member.firstName,
-                'lastName':current_member.lastName
-            }
-            all_members['data'].append(this_member)
-        return all_members
+    if 'username' in session and check(session['username']):
+        members = DepartmentMember.query.filter_by(departmentID = id).all()
+        if members is not None:
+            all_members = {'data':[]}
+            for member in members:
+                current_member = Account.query.filter_by(username = member.username).first()
+                this_member = {
+                    'username':current_member.username,
+                    'firstName':current_member.firstName,
+                    'lastName':current_member.lastName
+                }
+                all_members['data'].append(this_member)
+            return all_members
+        else:
+            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
 @app.route('/api/department/<id>/incidents', methods=['GET'])
 def get_department_incidents(id):
-    incidents = Incident.query.filter_by(investigatingDepartmentID = id).all()
-    if incidents is not None:
-        all_incidents = {'data':[]}
-        for incident in incidents:
-            this_incident = {
-                'incidentID':incident.incidentID,
-                'raisedID':incident.raisedID,
-                'affectedID':incident.affectedID,
-                'investigatingDepartmentID':incident.investigatingDepartmentID,
-                'description':incident.description,
-                'timeRaised':incident.timeRaised,
-                'priority':incident.priority,
-                'severity':incident.severity,
-                'impact':incident.impact,
-                'status':incident.status,
-                'timeCompleted':incident.timeCompleted
-            }
-            all_incidents['data'].append(this_incident)
-        return all_incidents
+    if 'username' in session and check(session['username']):
+        incidents = Incident.query.filter_by(investigatingDepartmentID = id).all()
+        if incidents is not None:
+            all_incidents = {'data':[]}
+            for incident in incidents:
+                this_incident = {
+                    'incidentID':incident.incidentID,
+                    'raisedID':incident.raisedID,
+                    'affectedID':incident.affectedID,
+                    'investigatingDepartmentID':incident.investigatingDepartmentID,
+                    'description':incident.description,
+                    'timeRaised':incident.timeRaised,
+                    'priority':incident.priority,
+                    'severity':incident.severity,
+                    'impact':incident.impact,
+                    'status':incident.status,
+                    'timeCompleted':incident.timeCompleted
+                }
+                all_incidents['data'].append(this_incident)
+            return all_incidents
+        else:
+            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
-@app.route('/api/login', methods=["POST", "GET"])
+@app.route('/api/login', methods=["POST"])
 def login():
-    if request.method == "GET":
-        return '<form action="http://127.0.0.1/api/login" method="POST"><input type="text"><input type="text"><input type="submit"></form>'
-    else:
+    if request.method == "POST":
         data = request.get_json()
-        print(data['password'])
-        print(data['username'])
-        if request.form is not None:
+        if data is not None:
+            print(data['username'])
             account = Account.query.get(data['username'])
             if account is not None and account.password == data['password']:
-                session['username'] = request.form['username']
-                return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+                session['username'] = data['username']
+                role = DepartmentMember.query.filter_by(username = data['username']).first()
+                return json.dumps({'role':role.role})
+            else:
+                return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
         else:
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
