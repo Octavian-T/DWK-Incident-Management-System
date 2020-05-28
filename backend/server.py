@@ -8,86 +8,97 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.secret_key = "d3ab1e7d7fa97fe46796219d07c4b05d5f1ac4704a43ba7aeb"
 
 db = SQLAlchemy(app)
 
+def check(username):
+    account = Account.query.get(username)
+    if account.username == username:
+        return True
+    else:
+        return False
+
 #incidents
 
-@app.route('/incident/<id>', methods = ['GET', 'POST', 'PUT'])
+@app.route('/api/incident/<id>', methods = ['GET', 'POST', 'PUT'])
 def get_incident(id):
-    if request.method == 'GET':
-        if id == 'all':
-            incidents = Incident.query.all()
-            all_incidents = {'data':[]}
-            for incident in incidents:
-                this_incident = {
-                    'incidentID':incident.incidentID,
-                    'raisedID':incident.raisedID,
-                    'affectedID':incident.affectedID,
-                    'investigatingDepartmentID':incident.investigatingDepartmentID,
-                    'description':incident.description,
-                    'timeRaised':incident.timeRaised,
-                    'priority':incident.priority,
-                    'severity':incident.severity,
-                    'impact':incident.impact,
-                    'status':incident.status,
-                    'timeCompleted':incident.timeCompleted
-                }
-                all_incidents['data'].append(this_incident)
-            return all_incidents
-        else:
-            incident = Incident.query.get(id)
-            if incident is not None:
-                return {
-                    'incidentID':incident.incidentID,
-                    'raisedID':incident.raisedID,
-                    'affectedID':incident.affectedID,
-                    'investigatingDepartmentID':incident.investigatingDepartmentID,
-                    'description':incident.description,
-                    'timeRaised':incident.timeRaised,
-                    'priority':incident.priority,
-                    'severity':incident.severity,
-                    'impact':incident.impact,
-                    'status':incident.status,
-                    'timeCompleted':incident.timeCompleted
-                }
+    if 'username' in session and check(session['username']):
+        if request.method == 'GET':
+            if id == 'all':
+                incidents = Incident.query.all()
+                all_incidents = {'data':[]}
+                for incident in incidents:
+                    this_incident = {
+                        'incidentID':incident.incidentID,
+                        'raisedID':incident.raisedID,
+                        'affectedID':incident.affectedID,
+                        'investigatingDepartmentID':incident.investigatingDepartmentID,
+                        'description':incident.description,
+                        'timeRaised':incident.timeRaised,
+                        'priority':incident.priority,
+                        'severity':incident.severity,
+                        'impact':incident.impact,
+                        'status':incident.status,
+                        'timeCompleted':incident.timeCompleted
+                    }
+                    all_incidents['data'].append(this_incident)
+                return all_incidents
+            else:
+                incident = Incident.query.get(id)
+                if incident is not None:
+                    return {
+                        'incidentID':incident.incidentID,
+                        'raisedID':incident.raisedID,
+                        'affectedID':incident.affectedID,
+                        'investigatingDepartmentID':incident.investigatingDepartmentID,
+                        'description':incident.description,
+                        'timeRaised':incident.timeRaised,
+                        'priority':incident.priority,
+                        'severity':incident.severity,
+                        'impact':incident.impact,
+                        'status':incident.status,
+                        'timeCompleted':incident.timeCompleted
+                    }
+                else:
+                    return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        elif request.method == 'POST' and id == 'new':
+            if request.form is not None:
+                newIncident = Incident(
+                    raisedID = request.form['raisedID'],
+                    affectedID = request.form['affectedID'],
+                    investigatingDepartmentID = request.form['investigatingDepartmentID'],
+                    description = request.form['description'],
+                    timeRaised = datetime.datetime.now(),
+                    priority = request.form['priority'],
+                    severity = request.form['severity'],
+                    impact = request.form['impact'],
+                    status = request.form['status'])
+                db.session.add(newIncident)
+                db.session.commit()
+                return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
             else:
                 return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
-    elif request.method == 'POST' and id == 'new':
-        if request.form is not None:
-            newIncident = Incident(
-                raisedID = request.form['raisedID'],
-                affectedID = request.form['affectedID'],
-                investigatingDepartmentID = request.form['investigatingDepartmentID'],
-                description = request.form['description'],
-                timeRaised = datetime.datetime.now(),
-                priority = request.form['priority'],
-                severity = request.form['severity'],
-                impact = request.form['impact'],
-                status = request.form['status'])
-            db.session.add(newIncident)
-            db.session.commit()
+        elif request.method == 'PUT':
+            data = request.get_json()
+            timedate = data['timeCompleted']
+            date = timedate[:10].split('-')
+            time = timedate[11:].split(':')
+            db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, description = "{}", priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}";'.format(
+                data['investigatingDepartmentID'],
+                data['description'],
+                str(data['priority']),
+                str(data['severity']),
+                str(data['impact']),
+                str(data['status']),
+                datetime.datetime(int(date[0]), int(date[1]), int(date[2]), int(time[0]), int(time[1]))))
             return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
         else:
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
-    elif request.method == 'PUT':
-        data = request.get_json()
-        timedate = data['timeCompleted']
-        date = timedate[:10].split('-')
-        time = timedate[11:].split(':')
-        db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, description = "{}", priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}";'.format(
-            data['investigatingDepartmentID'],
-            data['description'],
-            str(data['priority']),
-            str(data['severity']),
-            str(data['impact']),
-            str(data['status']),
-            datetime.datetime(int(date[0]), int(date[1]), int(date[2]), int(time[0]), int(time[1]))))
-        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
 
-@app.route('/incident/<id>/updates', methods=['GET', 'POST'])
+@app.route('/api/incident/<id>/updates', methods=['GET', 'POST'])
 def get_incident_updates(id):
     if request.method == 'GET':
         updates = IncidentUpdate.query.filter_by(incidentID = id).all()
@@ -118,7 +129,7 @@ def get_incident_updates(id):
 
 #accounts
 
-@app.route('/account/<username>', methods = ['GET'])
+@app.route('/api/account/<username>', methods = ['GET'])
 def get_account(username):
     if username == 'all':
         accounts = Account.query.all()
@@ -146,7 +157,7 @@ def get_account(username):
         else:
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
-@app.route('/account/<id>/incidents', methods=['GET'])
+@app.route('/api/account/<id>/incidents', methods=['GET'])
 def get_account_incidents(id):
     incidents = Incident.query.filter_by(raisedID = id).all()
     if incidents is not None:
@@ -172,7 +183,7 @@ def get_account_incidents(id):
 
 #department
 
-@app.route('/department/<id>', methods=['GET'])
+@app.route('/api/department/<id>', methods=['GET'])
 def get_department(id):
     if id == 'all':
         departments = Department.query.all()
@@ -194,7 +205,7 @@ def get_department(id):
         else:
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
-@app.route('/department/<id>/members')
+@app.route('/api/department/<id>/members')
 def get_department_members(id):
     members = DepartmentMember.query.filter_by(departmentID = id).all()
     if members is not None:
@@ -211,7 +222,7 @@ def get_department_members(id):
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
-@app.route('/department/<id>/incidents', methods=['GET'])
+@app.route('/api/department/<id>/incidents', methods=['GET'])
 def get_department_incidents(id):
     incidents = Incident.query.filter_by(investigatingDepartmentID = id).all()
     if incidents is not None:
@@ -234,6 +245,28 @@ def get_department_incidents(id):
         return all_incidents
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
+@app.route('/api/login', methods=["POST", "GET"])
+def login():
+    if request.method == "GET":
+        return '<form action="http://127.0.0.1/api/login" method="POST"><input type="text"><input type="text"><input type="submit"></form>'
+    else:
+        data = request.get_json()
+        print(data['password'])
+        print(data['username'])
+        if request.form is not None:
+            account = Account.query.get(data['username'])
+            if account is not None and account.password == data['password']:
+                session['username'] = request.form['username']
+                return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+        else:
+            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
+@app.after_request
+def after_request(response):
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
+    return response
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port=80)
