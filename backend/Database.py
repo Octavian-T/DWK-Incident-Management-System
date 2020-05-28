@@ -1,5 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
-
 from server import db
 
 class Account(db.Model):
@@ -14,7 +12,7 @@ class Department(db.Model):
 
 class DepartmentMember(db.Model):
     username = db.Column(db.String(32), db.ForeignKey('account.username'), primary_key=True, unique=True, nullable=False)
-    departmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'), primary_key=True, unique=True, nullable=False)
+    departmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'), primary_key=True, nullable=False)
     role = db.Column(db.String(32))
 
 class Incident(db.Model):
