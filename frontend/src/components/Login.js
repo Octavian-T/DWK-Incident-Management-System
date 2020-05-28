@@ -11,11 +11,7 @@ function Login() {
   const usernameInput = useRef(null);
   const passwordInput = useRef(null);
 
-
   function processCredentials(){
-    console.log(usernameInput.current.value);
-    console.log(md5(passwordInput.current.value));
-
     axios.post('http://127.0.0.1/api/login', JSON.stringify({ username: usernameInput.current.value, password: md5(passwordInput.current.value) }))
       .then(res => {
         console.log(res)
