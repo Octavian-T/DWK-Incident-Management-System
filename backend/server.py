@@ -1,5 +1,6 @@
 import datetime
 from flask import *
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from Database import *
 
@@ -11,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.secret_key = "d3ab1e7d7fa97fe46796219d07c4b05d5f1ac4704a43ba7aeb"
 
 db = SQLAlchemy(app)
+CORS(app)
 
 #incidents
 
@@ -239,15 +241,16 @@ def get_department_incidents(id):
 @app.route('/api/login', methods=["POST"])
 def login():
     if request.method == "POST":
-        data = request.get_json()
+        data = request.json
+        print(data)
         if data is not None:
-            print('>>>>>>>>>>>>>>{} logged in!'.format(data['username']))
             account = Account.query.get(data['username'])
-            department = DepartmentMember.query.filter_by(username = data['username']).first()
             if account is not None and account.password == data['password']:
-                return json.dumps({'username':account.username,'departmentID':department}), 200, {'ContentType':'application/json'}
+                print('>>>>>>>>>>>>>>{} logged in!'.format(data['username']))
+                department = DepartmentMember.query.filter_by(username = data['username']).first()
+                return json.dumps({'username':account.username,'departmentID':department.departmentID})
             else:
-                return json.dumps({'username':0}), 401, {'ContentType':'application/json'}
+                return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
         else:
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
