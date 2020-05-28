@@ -1,0 +1,24 @@
+.navbar-container {
+    background-color: var(--fourth);
+    height: 90%;
+    width: 250px;
+    float: left;
+    display: none;
+}
+
+.navbar-container ul {
+    list-style: none;
+}
+
+.navbar-container .navbar-exit-btn {
+    padding: 0px;
+    float: right;
+}
+
+.navbar-container a, .navbar-container a:visited, .navbar-container a:hover {
+    color: var(--primary);
+    text-decoration: none;
+
+    font-size: 20px;
+    font-weight: 700;
+}

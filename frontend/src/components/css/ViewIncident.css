@@ -1,0 +1,14 @@
+.incident-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.incident-table, .incident-table td, .incident-table th {
+    border: 1px solid var(--primary);
+}
+
+.incident-table th {
+    color: var(--primary);
+    font-weight: 300;
+    text-align: center;
+}

@@ -12,14 +12,26 @@ import './components/css/Main.css';
 
 
 function App() {
+
+  function toggleNavbar(){
+    var nav = document.getElementsByClassName('navbar-container')[0];
+    if(nav.style.display === "block"){
+      nav.style.display = "none";
+    }
+    else {
+      nav.style.display = "block";
+    }
+  }
+
   return (
     <>
-      <div className="main-header">
+      <header>
         <h1><Link to="/" id="headingLogo">DWK PLC</Link></h1>
-      </div>
+        <button style={{display: 'inline-block', float: 'right'}} onClick={toggleNavbar}>Menu</button>
+      </header>
       
       <Navbar />
-      <div className="content-container">
+      <div className="container">
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/login" component={Login} />
