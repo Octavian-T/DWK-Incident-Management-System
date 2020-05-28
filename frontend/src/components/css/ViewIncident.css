@@ -12,3 +12,7 @@
     font-weight: 300;
     text-align: center;
 }
+
+.incident-table tbody tr:nth-child(odd){
+    background-color: white;
+}

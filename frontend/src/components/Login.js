@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useRef } from 'react';
+
+import axios from 'axios';
+import md5 from 'md5';
 
 import './css/Login.css';
-
 import lock from './icons/lock.svg';
 
 function Login() {
+
+  const usernameInput = useRef(null);
+  const passwordInput = useRef(null);
+
+
+  function processCredentials(){
+    console.log(usernameInput.current.value);
+    console.log(md5(passwordInput.current.value));
+
+    axios.post('http://127.0.0.1/api/login', JSON.stringify({ username: usernameInput.current.value, password: md5(passwordInput.current.value) }))
+      .then(res => {
+        console.log(res)
+      });
+  }
+
   return (
     <>
       <div className="row">
@@ -15,11 +32,11 @@ function Login() {
         <div className="background-container">
           <img src={lock} alt=""/>
           <form>
-            <input type="text" placeholder="Username"></input>
+            <input type="text" placeholder="Username" ref={usernameInput}></input>
             <br></br>
-            <input type="password" placeholder="Password"></input>
+            <input type="password" placeholder="Password" ref={passwordInput}></input>
             <br></br>
-            <button>Log in</button>
+            <button onClick={processCredentials}>Log in</button>
           </form>
         </div>
 

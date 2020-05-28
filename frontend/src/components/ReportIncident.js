@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './css/ReportIncident.css';
+
 function ReportIncident() {
     return (
       <div className="col-md-4">
@@ -7,9 +9,9 @@ function ReportIncident() {
 
         <div className="background-container">
             <form>
-                <input type="text" placeholder="Date"></input>
+                <input type="date" placeholder="Date"></input>
                 <br />
-                <input type="text" placeholder="Time"></input>
+                <input type="time" placeholder="Time"></input>
                 <br />
 
                 <label>Raised by</label>
