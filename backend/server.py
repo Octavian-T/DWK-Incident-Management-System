@@ -174,7 +174,7 @@ def get_account(username):
 
 @app.route('/api/account/<id>/incidents', methods=['GET'])
 def get_account_incidents(id):
-    incidents = Incident.query.filter_by(raisedID = id).all()
+    incidents = Incident.query.filter((Incident.raisedID == "test") | (Incident.affectedID == "test")).all()
     if incidents is not None:
         all_incidents = {'data':[]}
         for incident in incidents:
@@ -271,10 +271,11 @@ def login():
 
         if account is not None and account.password == password:
             print("%s logged in" % (account.username))
-            department = DepartmentMember.query.filter_by(username = username).first()
+            departmentMember = DepartmentMember.query.filter_by(username = username).first()
+            department = Department.query.filter_by(departmentID=departmentMember.departmentID).first()
             access_token = create_access_token(identity=username)
 
-            return jsonify({'access_token': access_token, 'username': account.username, 'firstName': account.firstName, 'lastName': account.lastName, 'departmentID': department.departmentID}), 200, {'ContentType':'application/json'}
+            return jsonify({'access_token': access_token, 'username': account.username, 'firstName': account.firstName, 'lastName': account.lastName, 'departmentID': departmentMember.departmentID, 'department': department.name}), 200, {'ContentType':'application/json'}
 
         else: 
             return jsonify({'success': False, 'error': 'Incorrect username/password'}), 401, {'ContentType':'application/json'}

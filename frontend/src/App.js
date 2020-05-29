@@ -31,7 +31,7 @@ function App() {
         <span className="header-right">
           
             {
-              sessionStorage.getItem('access_token') ? <p>{sessionStorage.getItem('first_name')}</p> : <Link to="login">Log in</Link>
+              sessionStorage.getItem('access_token') ? <p>{sessionStorage.getItem('department') + " - " + sessionStorage.getItem('first_name')}</p> : <Link to="login">Log in</Link>
             }
           
           <button onClick={toggleNavbar}>Menu</button>

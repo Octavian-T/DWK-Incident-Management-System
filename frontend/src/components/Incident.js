@@ -6,6 +6,7 @@ import axios from 'axios';
 // import ViewIncident from './Incident/ViewIncident';
 
 import EndUserIncident from './Incident/EndUser/EndUserIncident';
+import ServiceDeskIncident from './Incident/ServiceDesk/ServiceDeskIncident';
 
 function Incident() {
 
@@ -24,10 +25,22 @@ function Incident() {
     })
   }, []);
 
+  let incidentPage;
+  let depID = sessionStorage.getItem('departmentID')
+
+  if (depID == 1){
+    incidentPage = <EndUserIncident />
+  }
+  //Service desk staff
+  else if (depID == 7){
+    incidentPage = <ServiceDeskIncident />
+  }
+
   return (
     <>
       <div className="row">
-        <EndUserIncident />
+        {/* { sessionStorage.getItem('departmentID') == 1 ? <EndUserIncident /> : "" } */}
+        {incidentPage}
       </div>
     </>
   );
