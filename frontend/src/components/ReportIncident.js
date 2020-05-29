@@ -40,7 +40,7 @@ function ReportIncident() {
                 <label>Raised for</label>
                 <input className="form-control" type="text" placeholder="Username" ref={affectedID}></input>
             </div>
-            <div classname="gorm-group">
+            <div className="gorm-group">
                 <label>Department</label>
                 <div className="dopdown-menu">
                     <a className="dropdown-item" ></a>
@@ -52,7 +52,7 @@ function ReportIncident() {
             </div>
             <div className="form-group">
                 <label>Incident description</label>
-                <textarea clasName="form-control" rows="3" ref={description}></textarea>
+                <textarea className="form-control" rows="3" ref={description}></textarea>
             </div>
             <div className="form-group">
                 <label>Assign</label>

@@ -25,6 +25,7 @@ CORS(app)
 #incidents
 
 @app.route('/api/incident/<id>', methods = ['GET', 'POST', 'PUT'])
+@jwt_required
 def get_incident(id):
     if request.method == 'GET':
         if id == 'all':
@@ -271,7 +272,7 @@ def login():
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
-    header['Access-Control-Allow-Headers'] = 'Content-Type'
+    header['Access-Control-Allow-Headers'] = '*'
     return response
 
 if __name__ == "__main__":

@@ -9,11 +9,22 @@ function ViewIncident() {
     const [incidents, setIncidents] = useState({ "data": [] });
 
     useEffect(() => {
-        axios.get('http://127.0.0.1/api/incident/all')
-            .then((res) => {
-                console.log(res);
-                setIncidents(res.data);
-            })
+        axios.get('http://127.0.0.1/api/incident/all', {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
+        .then((res) => {
+            console.log(res);
+            setIncidents(res.data);
+        })
+        .catch(error => {
+            if(error.response.status === 422){
+                alert("Error " + error.response.status + " - Not logged in");
+                window.location.replace("/");
+            }
+        })
     }, []);
     
     console.log(incidents);
