@@ -34,3 +34,15 @@ class IncidentUpdate(db.Model):
     incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
     date = db.Column(db.DateTime())
     description = db.Column(db.String(250))
+
+class Unit(db.Model):
+    unitID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
+    departmentID = db.Column(db.String(32), db.ForeignKey('department.departmentID', nullable=False))
+    unitname = db.Column(db.String(32), nullable=False)
+
+class Message(db.Model):
+    messageID = db.Column(db.Integer(), primaery_key=True, unique=True, nullable=False)
+    messageText = db.Column(db.String(250))
+    senderID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    receiverID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    date = db.Column(db.DateTime())
