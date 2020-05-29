@@ -18,6 +18,26 @@ header {
     height: 10%;
 }
 
+header .header-left {
+    float: left;
+}
+
+header .header-right {
+    float: right;
+}
+
+header .header-right p {
+    display: inline;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 5px;
+}
+
+header .header-right button {
+    margin: 0px !important;
+    display: inline;
+}
+
 header h1 {
     margin: 0px;
     font-size: 48px;

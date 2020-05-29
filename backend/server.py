@@ -248,37 +248,24 @@ def get_department_incidents(id):
 
 @app.route('/api/login', methods=["POST"])
 def login():
-    # print(request)
-    # print(request.data)
-    # print(request.get_json())
     username = request.get_json()['username']
     password = request.get_json()['password']
 
     if username is not None and password is not None:
         account = Account.query.get(username)
+
         if account is not None and account.password == password:
             print("%s logged in" % (account.username))
             department = DepartmentMember.query.filter_by(username = username).first()
-
             access_token = create_access_token(identity=username)
-            print(access_token)
 
-            return jsonify({"access_token": access_token, "username": account.username, "departmentID": department.departmentID})
+            return jsonify({'access_token': access_token, 'username': account.username, 'firstName': account.firstName, 'lastName': account.lastName, 'departmentID': department.departmentID}), 200, {'ContentType':'application/json'}
+
         else: 
-            return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
-    else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+            return jsonify({'success': False, 'error': 'Incorrect username/password'}), 401, {'ContentType':'application/json'}
 
-    # if username is not None and password is not None:
-    #     account = Account.query.get(username)
-    #     if account is not None and account.password == password:
-    #         print('>>>>>>>>>>>>>>{} logged in!'.format(username))
-    #         department = DepartmentMember.query.filter_by(username = username).first()
-    #         return json.dumps({'username':account.username,'departmentID':department.departmentID})
-    #     else:
-    #         return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
-    # else:
-    #     return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+    else:
+        return jsonify({'success': False, 'error': 'Missing username/password'}), 400, {'ContentType':'application/json'}
 
 @app.after_request
 def after_request(response):

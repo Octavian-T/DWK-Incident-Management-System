@@ -26,8 +26,18 @@ function App() {
   return (
     <>
       <header>
-        <h1><Link to="/" id="headingLogo">DWK PLC</Link></h1>
-        <button style={{display: 'inline-block', float: 'right'}} onClick={toggleNavbar}>Menu</button>
+        <span className="header-left">
+          <h1><Link to="/" id="headingLogo">DWK PLC</Link></h1>
+        </span>
+
+        <span className="header-right">
+          <p>
+            {
+              sessionStorage.getItem('access_token') ? sessionStorage.getItem('first_name') : 'Log in'
+            }
+          </p>
+          <button onClick={toggleNavbar}>Menu</button>
+        </span>
       </header>
       
       <Navbar />
