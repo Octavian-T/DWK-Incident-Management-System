@@ -30,10 +30,12 @@ function Login() {
       })
       .catch(error => {
         //Alert error, reset password input box
-        console.log(error.response.data);
         
         passwordInput.current.value = "";
-        alert(error.response.data.error);
+        if(error.response){
+          console.log(error.response.data);
+          alert(error.response.data.error);
+        }
       });
   }
 

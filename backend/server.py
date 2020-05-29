@@ -66,22 +66,36 @@ def get_incident(id):
             else:
                 return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     elif request.method == 'POST' and id == 'new':
-        if request.form is not None:
-            newIncident = Incident(
-                raisedID = request.form['raisedID'],
-                affectedID = request.form['affectedID'],
-                investigatingDepartmentID = request.form['investigatingDepartmentID'],
-                description = request.form['description'],
-                timeRaised = datetime.datetime.now(),
-                priority = request.form['priority'],
-                severity = request.form['severity'],
-                impact = request.form['impact'],
-                status = request.form['status'])
-            db.session.add(newIncident)
-            db.session.commit()
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-        else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        # if request.form is not None:
+        #     newIncident = Incident(
+        #         raisedID = request.form['raisedID'],
+        #         affectedID = request.form['affectedID'],
+        #         investigatingDepartmentID = request.form['investigatingDepartmentID'],
+        #         description = request.form['description'],
+        #         timeRaised = datetime.datetime.now(),
+        #         priority = request.form['priority'],
+        #         severity = request.form['severity'],
+        #         impact = request.form['impact'],
+        #         status = request.form['status'])
+        #     db.session.add(newIncident)
+        #     db.session.commit()
+        #     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+        # elif response:
+        newIncident = Incident(
+            raisedID = request.get_json()['raisedID'],
+            affectedID = request.get_json()['affectedID'],
+            investigatingDepartmentID = request.get_json()['investigatingDepartmentID'],
+            description = request.get_json()['description'],
+            timeRaised = datetime.datetime.now(),
+            priority = request.get_json()['priority'],
+            severity = request.get_json()['severity'],
+            impact = request.get_json()['impact'],
+            status = request.get_json()['status'])
+        db.session.add(newIncident)
+        db.session.commit()
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+        # else:
+        #     return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     elif request.method == 'PUT':
         data = request.get_json()
         timedate = data['timeCompleted']

@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import './css/ViewIncident.css';
+import '../../css/ViewIncident.css';
 
-function ViewIncident() {
+function EndUserViewIncident() {
 
     const [incidents, setIncidents] = useState({ "data": [] });
 
     useEffect(() => {
-        axios.get('http://127.0.0.1/api/incident/all', {
+        axios.get(`http://127.0.0.1/api/account/${sessionStorage.getItem('username')}/incidents`, {
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
                 'Access-Control-Allow-Origin': '*'
             }
         })
-        .then((res) => {
+        .then(res => {
             console.log(res);
             setIncidents(res.data);
         })
@@ -31,26 +31,15 @@ function ViewIncident() {
 
     return (
       <div className="col-md-8">
-        <h2 className="subheading">View Incident</h2>
+        <h2 className="subheading">My Incidents</h2>
 
         <div className="background-container">
-            <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>
 
-            <button>Submit</button>
-            <br />
-
-            <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>
-
-            <button>Submit</button>
-            <br />
+            <div style={{float: "left", textAlign: "left", lineHeight: "100%"}}>
+                <p>{sessionStorage.getItem('first_name')}</p>
+                <p>{sessionStorage.getItem('first_name')}</p>
+                <p>{sessionStorage.getItem('departmentID')}</p>
+            </div>
 
             <table className="incident-table">
                 <thead>
@@ -87,4 +76,4 @@ function ViewIncident() {
     );
 }
 
-export default ViewIncident;
+export default EndUserViewIncident;

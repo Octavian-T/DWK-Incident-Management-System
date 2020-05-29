@@ -5,7 +5,7 @@ import { Switch, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
-import Incident from './components/Incident';
+import Incident from './components/Incident'
 import Message from './components/Message';
 import Error from './components/Error';
 import SignOut from './components/SignOut';
