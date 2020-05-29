@@ -7,6 +7,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Incident from './components/Incident';
 import Error from './components/Error';
+import SignOut from './components/SignOut';
 
 import './components/css/Main.css';
 
@@ -45,6 +46,7 @@ function App() {
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/login" component={Login} />
+          <Route path="/signout" component={SignOut} />
           <Route path="/incidents" component={Incident} />
           <Route component={Error} />
         </Switch>
