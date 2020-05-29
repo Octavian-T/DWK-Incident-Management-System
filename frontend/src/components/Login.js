@@ -12,19 +12,27 @@ function Login() {
   const passwordInput = useRef(null);
 
   function processCredentials(event){
+    event.preventDefault();
     console.log({ "username": usernameInput.current.value, "password": md5(passwordInput.current.value) });
     axios.post('http://127.0.0.1/api/login', { "username": usernameInput.current.value, "password": md5(passwordInput.current.value) })
       .then(res => {
         console.log(res.data);
 
+        //Successful log in, set session variables
         sessionStorage.setItem('access_token', res.data.access_token);
         sessionStorage.setItem('username', res.data.username);
         sessionStorage.setItem('first_name', res.data.firstName);
         sessionStorage.setItem('last_name', res.data.lastName);
         sessionStorage.setItem('departmentID', res.data.departmentID);
+
+        //Go to home page
+        window.location.replace("/")
       })
       .catch(error => {
+        //Alert error, reset password input box
         console.log(error.response.data);
+        
+        passwordInput.current.value = "";
         alert(error.response.data.error);
       });
   }
