@@ -5,6 +5,16 @@ from server import db
 
 import datetime
 
+import random
+
+db.session.query(Account).delete()
+db.session.query(Department).delete()
+db.session.query(DepartmentMember).delete()
+db.session.query(Incident).delete()
+db.session.query(IncidentUpdate).delete()
+db.session.query(Unit).delete()
+db.session.query(Message).delete()
+
 #techs
 account1 = Account(username = 'mud', password = '5f4dcc3b5aa765d61d8327deb882cf99', firstName = 'Ianis', lastName = 'Smith')
 account2 = Account(username = 'vote', password = '5f4dcc3b5aa765d61d8327deb882cf99', firstName = 'Alaw', lastName = 'Ward')
@@ -174,5 +184,13 @@ db.session.add(incidentUpdate5)
 db.session.add(incidentUpdate6)
 db.session.add(incidentUpdate7)
 db.session.add(incidentUpdate8)
+
+
+for i in range(0, 15):
+    db.session.add(Unit(unitID=(i+1), departmentID=random.randint(1, 9), unitname=("unit" + str(random.randint(1, 5)))))
+
+
+for i in range(0, 15):
+    db.session.add(Message(messageID=(i+1), messageText=(str(random.randint(10000,900000))), senderID=random.randint(1, 24), receiverID=random.randint(1, 24), date=datetime.datetime(2019,10,15,14,5)))
 
 db.session.commit()
