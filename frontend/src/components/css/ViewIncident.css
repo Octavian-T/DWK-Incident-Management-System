@@ -8,11 +8,16 @@
 }
 
 .incident-table th {
+    background: white;
     color: var(--primary);
     font-weight: 300;
     text-align: center;
 }
 
 .incident-table tbody tr:nth-child(odd){
+    background-color: rgba(99, 126, 144,0.3);
+}
+
+.incident-table tbody tr:nth-child(even){
     background-color: white;
 }

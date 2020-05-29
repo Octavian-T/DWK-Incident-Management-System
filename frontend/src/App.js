@@ -17,12 +17,7 @@ function App() {
 
   function toggleNavbar(){
     var nav = document.getElementsByClassName('navbar-container')[0];
-    if(nav.style.display === "block"){
-      nav.style.display = "none";
-    }
-    else {
-      nav.style.display = "block";
-    }
+    nav.style.display === "block" ? nav.style.display = "none" : nav.style.display = "block";
   }
 
   return (
@@ -33,11 +28,11 @@ function App() {
         </span>
 
         <span className="header-right">
-          <p>
+          
             {
-              sessionStorage.getItem('access_token') ? sessionStorage.getItem('first_name') : 'Log in'
+              sessionStorage.getItem('access_token') ? <p>{sessionStorage.getItem('first_name')}</p> : <Link to="login">Log in</Link>
             }
-          </p>
+          
           <button onClick={toggleNavbar}>Menu</button>
         </span>
       </header>
