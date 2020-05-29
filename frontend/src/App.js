@@ -10,6 +10,7 @@ import Error from './components/Error';
 import SignOut from './components/SignOut';
 
 import './components/css/Main.css';
+import './components/css/Header.css';
 
 
 function App() {

@@ -13,6 +13,7 @@
 .navbar-container .navbar-exit-btn {
     padding: 0px;
     float: right;
+    position: relative;
 }
 
 .navbar-container a, .navbar-container a:visited, .navbar-container a:hover {
@@ -21,4 +22,10 @@
 
     font-size: 20px;
     font-weight: 700;
+    line-height: 200%;
+}
+
+.navbar-container .navbar-bottom {
+    position: absolute;
+    bottom: 30px;
 }
