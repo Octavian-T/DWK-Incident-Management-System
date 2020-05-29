@@ -4,12 +4,20 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from Database import *
 
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+
 app = Flask(__name__)
 
 app.config['JSON_SORT_KEYS'] = False
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.secret_key = "d3ab1e7d7fa97fe46796219d07c4b05d5f1ac4704a43ba7aeb"
+
+app.config['JWT_SECRET_KEY'] = 'dwk-plc'
+jwt = JWTManager(app)
 
 db = SQLAlchemy(app)
 CORS(app)
@@ -240,24 +248,43 @@ def get_department_incidents(id):
 
 @app.route('/api/login', methods=["POST"])
 def login():
-    if request.method == "POST":
-        data = request.json
-        print(data)
-        if data is not None:
-            account = Account.query.get(data['username'])
-            if account is not None and account.password == data['password']:
-                print('>>>>>>>>>>>>>>{} logged in!'.format(data['username']))
-                department = DepartmentMember.query.filter_by(username = data['username']).first()
-                return json.dumps({'username':account.username,'departmentID':department.departmentID})
-            else:
-                return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
-        else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+    # print(request)
+    # print(request.data)
+    # print(request.get_json())
+    username = request.get_json()['username']
+    password = request.get_json()['password']
+
+    if username is not None and password is not None:
+        account = Account.query.get(username)
+        if account is not None and account.password == password:
+            print("%s logged in" % (account.username))
+            department = DepartmentMember.query.filter_by(username = username).first()
+
+            access_token = create_access_token(identity=username)
+            print(access_token)
+
+            return jsonify({"access_token": access_token, "username": account.username, "departmentID": department.departmentID})
+        else: 
+            return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
+    # if username is not None and password is not None:
+    #     account = Account.query.get(username)
+    #     if account is not None and account.password == password:
+    #         print('>>>>>>>>>>>>>>{} logged in!'.format(username))
+    #         department = DepartmentMember.query.filter_by(username = username).first()
+    #         return json.dumps({'username':account.username,'departmentID':department.departmentID})
+    #     else:
+    #         return json.dumps({'success':False}), 401, {'ContentType':'application/json'}
+    # else:
+    #     return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 @app.after_request
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
+    header['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
 if __name__ == "__main__":
