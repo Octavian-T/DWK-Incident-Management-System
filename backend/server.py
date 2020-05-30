@@ -25,7 +25,6 @@ CORS(app)
 #incidents
 
 @app.route('/api/incident/<id>', methods = ['GET', 'POST', 'PUT'])
-@jwt_required
 def get_incident(id):
     if request.method == 'GET':
         if id == 'all':
@@ -194,6 +193,7 @@ def get_account(username):
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 @app.route('/api/account/<id>/incidents', methods=['GET'])
+@jwt_required
 def get_account_incidents(id):
     incidents = Incident.query.filter((Incident.raisedID == id) | (Incident.affectedID == id)).all()
     if incidents is not None:

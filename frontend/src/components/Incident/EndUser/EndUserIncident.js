@@ -16,7 +16,7 @@ function EndUserIncident() {
         </div>
         
         <div className="col-md-8">
-          <EndUserViewIncident setSelectedIncidentID={setSelectedIncidentID}/>
+          <EndUserViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID}/>
           <EndUserAddNote selectedIncidentID={selectedIncidentID}/>
         </div>
       </div>

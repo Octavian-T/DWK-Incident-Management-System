@@ -22,3 +22,7 @@
 .incident-table tbody tr:nth-child(even){
     background-color: white;
 }
+
+.incident-table tbody tr td .clickable {
+    cursor: pointer;
+}
