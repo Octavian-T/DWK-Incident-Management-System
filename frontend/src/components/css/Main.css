@@ -31,7 +31,7 @@
     text-align: center;
 }
 
-input {
+input, select {
     border: none;
     background-color: #C4C4C4;
     

@@ -82,14 +82,15 @@ def get_incident(id):
         # elif response:
         newIncident = Incident(
             raisedID = request.get_json()['raisedID'],
-            affectedID = request.get_json()['affectedID'],
-            investigatingDepartmentID = request.get_json()['investigatingDepartmentID'],
+            affectedID = request.get_json()['affectedID'] if 'affectedID' in request.get_json() else request.get_json()['raisedID'],
+            investigatingDepartmentID = request.get_json()['investigatingDepartmentID'] if 'investigatingDepartmentID' in request.get_json() else '',
             description = request.get_json()['description'],
             timeRaised = datetime.datetime.now(),
-            priority = request.get_json()['priority'],
-            severity = request.get_json()['severity'],
-            impact = request.get_json()['impact'],
-            status = request.get_json()['status'])
+            priority = request.get_json()['priority'] if 'priority' in request.get_json() else '',
+            severity = request.get_json()['severity'] if 'severity' in request.get_json() else '',
+            impact = request.get_json()['impact'] if 'impact' in request.get_json() else '',
+            status = request.get_json()['status'] if 'priority' in request.get_json() else '',
+            timeCompleted = datetime.datetime.now() if 'closeIncident' in request.get_json() else None)
         db.session.add(newIncident)
         db.session.commit()
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}

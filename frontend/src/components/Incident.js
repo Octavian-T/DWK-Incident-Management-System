@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import EndUserIncident from './Incident/EndUser/EndUserIncident';
 import ServiceDeskIncident from './Incident/ServiceDesk/ServiceDeskIncident';
+import TechnicianIncident from './Incident/Technician/TechnicianIncident'
 
 function Incident() {
 
@@ -32,7 +33,7 @@ function Incident() {
   if (depID === "1") incidentPage = <EndUserIncident />
   //Service desk staff
   else if (depID === "7") incidentPage = <ServiceDeskIncident />
-
+  else if (depID === "2") incidentPage = <TechnicianIncident />
   return (
     <>
       <div className="row">
