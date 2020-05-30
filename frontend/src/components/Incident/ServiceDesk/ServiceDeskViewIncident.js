@@ -1,36 +1,27 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
+import getUsersIncidents from '../IncidentFunctions';
 import '../../css/ViewIncident.css';
 
 function ServiceDeskViewIncident(props) {
 
-    const [incidents, setIncidents] = useState({ "data": [] });
-
+    const [incidents, setIncidents] = useState({ data : [] });
+    
+    const searchUserIncidents = useRef(null);
+    
     useEffect(() => {
-        axios.get(`http://127.0.0.1/api/account/${sessionStorage.getItem('username')}/incidents`, {
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                'Access-Control-Allow-Origin': '*'
-            }
-        })
-        .then(res => {
-            console.log(res);
-            setIncidents(res.data);
-        })
-        .catch(error => {
-            if(error.response.status === 422){
-                alert("Error " + error.response.status + " - Not logged in");
-                window.location.replace("/");
-            }
-        })
+       getUsersIncidents(sessionStorage.getItem('username'), setIncidents);
     }, []);
     
     //Set selected ID on row click
     function onIncidentRowClick(noteID, clickOnShowNotes){
         props.setSelectedIncidentID(noteID);
         if (clickOnShowNotes) showNotes(noteID);
+    }
+    
+    function handleSearchUserIncidents(event){
+        event.preventDefault();
+        getUsersIncidents(searchUserIncidents.current.value, setIncidents);
     }
 
     function showNotes(noteID){
@@ -42,7 +33,7 @@ function ServiceDeskViewIncident(props) {
             }
         })
         .then(res => {
-            var notes = res.data.data;
+            const notes = res.data.data;
             if(notes.length === 0){
                 alert("No notes for this incident");
             }
@@ -65,10 +56,10 @@ function ServiceDeskViewIncident(props) {
 
         <div className="background-container">
 
-            <div>
-                <input type="text" placeholder="Enter username to find incidents"></input>
+            <form onSubmit={handleSearchUserIncidents}>
+                <input type="text" placeholder="Enter username to find incidents" ref={searchUserIncidents}></input>
                 <button>Submit</button>
-            </div>
+            </form>
 
             <table className="incident-table">
                 <thead>
@@ -86,7 +77,7 @@ function ServiceDeskViewIncident(props) {
                 </thead>
                 <tbody>
                     {
-                        incidents.data.map(incident => (
+                       incidents && incidents.data && incidents.data.map(incident => (
                             <tr key={incident.incidentID} onClick={() => onIncidentRowClick(incident.incidentID, false)}>
                                 <td>{incident.incidentID}</td>
                                 <td>Location</td>
