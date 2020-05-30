@@ -30,7 +30,7 @@ function ServiceDeskViewIncident() {
     console.log(incidents);
 
     return (
-      <div className="col-md-8">
+      <>
         <h2 className="subheading">My Incidents</h2>
 
         <div className="background-container">
@@ -69,7 +69,7 @@ function ServiceDeskViewIncident() {
                 </tbody>
             </table>
         </div>
-      </div>
+      </>
     );
 }
 

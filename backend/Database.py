@@ -46,3 +46,10 @@ class Message(db.Model):
     senderID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
     receiverID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
     date = db.Column(db.DateTime())
+
+class Note(db.Model):
+    noteID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
+    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
+    author = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    text = db.Column(db.String(250))
+    date = db.Column(db.DateTime())

@@ -30,7 +30,7 @@ function ViewIncident() {
     console.log(incidents);
 
     return (
-      <div className="col-md-8">
+      <>
         <h2 className="subheading">View Incident</h2>
 
         <div className="background-container">
@@ -83,7 +83,7 @@ function ViewIncident() {
                 </tbody>
             </table>
         </div>
-      </div>
+      </>
     );
 }
 

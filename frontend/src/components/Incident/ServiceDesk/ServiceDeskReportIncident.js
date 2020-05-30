@@ -62,7 +62,7 @@ function ServiceDeskReportIncident() {
     }
 
     return (
-        <div className="col-md-4">
+        <>
           <h2 className="subheading">Report Incident</h2>
 
           <div className="background-container">
@@ -94,7 +94,7 @@ function ServiceDeskReportIncident() {
 
                 <div className="incidentMeasurementSelect">
                     <label htmlFor="prioritySelect">Priority</label>
-                    <select id="prioritySelect" defaultValue={priority} onChange={(event) => setPriority(event.target.value)}> 
+                    <select id="prioritySelect" defaultValue={priority} onChange={event => setPriority(event.target.value)}> 
                         <option value="P1">P1</option>
                         <option value="P2">P2</option>
                         <option value="P3">P3</option>
@@ -104,7 +104,7 @@ function ServiceDeskReportIncident() {
                 <button>Submit</button>
             </form>
           </div>
-        </div>
+        </>
     );
 }
 

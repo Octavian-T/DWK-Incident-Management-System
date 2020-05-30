@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import '../../css/ViewIncident.css';
+import Incident from '../../Incident';
 
-function EndUserViewIncident() {
+function EndUserViewIncident(props) {
 
     const [incidents, setIncidents] = useState({ "data": [] });
 
@@ -26,11 +27,14 @@ function EndUserViewIncident() {
             }
         })
     }, []);
-    
-    console.log(incidents);
+
+    //Set selected ID on row click
+    function onIncidentRowClick(id){
+        props.setSelectedIncidentID(id);
+    }
 
     return (
-      <div className="col-md-8">
+      <>
         <h2 className="subheading">My Incidents</h2>
 
         <div className="background-container">
@@ -38,7 +42,7 @@ function EndUserViewIncident() {
             <div style={{float: "left", textAlign: "left", lineHeight: "100%"}}>
                 <p>{sessionStorage.getItem('first_name')}</p>
                 <p>{sessionStorage.getItem('first_name')}</p>
-                <p>{sessionStorage.getItem('departmentID')}</p>
+                <p>{sessionStorage.getItem('department')}</p>
             </div>
 
             <table className="incident-table">
@@ -57,7 +61,7 @@ function EndUserViewIncident() {
                 <tbody>
                     {
                         incidents.data.map(incident => (
-                            <tr key={incident.incidentID}>
+                            <tr key={incident.incidentID} onClick={() => onIncidentRowClick(incident.incidentID)}>
                                 <td>{incident.incidentID}</td>
                                 <td>Location</td>
                                 <td>{incident.description}</td>
@@ -71,8 +75,9 @@ function EndUserViewIncident() {
                     }
                 </tbody>
             </table>
+            
         </div>
-      </div>
+      </>
     );
 }
 

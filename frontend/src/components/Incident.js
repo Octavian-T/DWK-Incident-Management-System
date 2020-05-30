@@ -28,18 +28,14 @@ function Incident() {
   let incidentPage;
   let depID = sessionStorage.getItem('departmentID')
 
-  if (depID == 1){
-    incidentPage = <EndUserIncident />
-  }
+  //End user
+  if (depID === "1") incidentPage = <EndUserIncident />
   //Service desk staff
-  else if (depID == 7){
-    incidentPage = <ServiceDeskIncident />
-  }
+  else if (depID === "7") incidentPage = <ServiceDeskIncident />
 
   return (
     <>
       <div className="row">
-        {/* { sessionStorage.getItem('departmentID') == 1 ? <EndUserIncident /> : "" } */}
         {incidentPage}
       </div>
     </>

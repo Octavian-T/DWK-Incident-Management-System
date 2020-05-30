@@ -142,6 +142,27 @@ def get_incident_updates(id):
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
+@app.route('/api/incident/<id>/notes', methods=['GET'])
+def get_incident_notes(id):
+    notes = Note.query.filter_by(incidentID=id).all()
+
+    if notes is not None:
+        
+        all_notes = { 'data': [] }
+        for note in notes:
+            all_notes['data'].append({
+                'noteID': note.noteID,
+                'incidentID': note.incidentID,
+                'author': note.author,
+                'text': note.text,
+                'date': note.date
+            })
+        return all_notes
+
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
+
 #accounts
 
 @app.route('/api/account/<username>', methods = ['GET'])
@@ -239,28 +260,45 @@ def get_department_members(id):
 
 @app.route('/api/department/<id>/incidents', methods=['GET'])
 def get_department_incidents(id):
-        incidents = Incident.query.filter_by(investigatingDepartmentID = id).all()
-        if incidents is not None:
-            all_incidents = {'data':[]}
-            for incident in incidents:
-                this_incident = {
-                    'incidentID':incident.incidentID,
-                    'raisedID':incident.raisedID,
-                    'affectedID':incident.affectedID,
-                    'investigatingDepartmentID':incident.investigatingDepartmentID,
-                    'description':incident.description,
-                    'timeRaised':incident.timeRaised,
-                    'priority':incident.priority,
-                    'severity':incident.severity,
-                    'impact':incident.impact,
-                    'status':incident.status,
-                    'timeCompleted':incident.timeCompleted
-                }
-                all_incidents['data'].append(this_incident)
-            return all_incidents
-        else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+    incidents = Incident.query.filter_by(investigatingDepartmentID = id).all()
+    if incidents is not None:
+        all_incidents = {'data':[]}
+        for incident in incidents:
+            this_incident = {
+                'incidentID':incident.incidentID,
+                'raisedID':incident.raisedID,
+                'affectedID':incident.affectedID,
+                'investigatingDepartmentID':incident.investigatingDepartmentID,
+                'description':incident.description,
+                'timeRaised':incident.timeRaised,
+                'priority':incident.priority,
+                'severity':incident.severity,
+                'impact':incident.impact,
+                'status':incident.status,
+                'timeCompleted':incident.timeCompleted
+            }
+            all_incidents['data'].append(this_incident)
+        return all_incidents
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
+
+#Notes
+@app.route('/api/note/new', methods=['POST'])
+def get_incident_note():
+    note = Note(
+        incidentID=request.get_json()['incidentID'],
+        author=request.get_json()['author'],
+        text=request.get_json()['text'],
+        date=datetime.datetime.now()
+    )
+    db.session.add(note)
+    db.session.commit()
+
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
+#Login
 @app.route('/api/login', methods=["POST"])
 def login():
     username = request.get_json()['username']

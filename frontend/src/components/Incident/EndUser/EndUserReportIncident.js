@@ -70,7 +70,7 @@ function EndUserReportIncident() {
     // }
 
     return (
-        <div className="col-md-4">
+        <>
           <h2 className="subheading">Report Incident</h2>
 
           <div className="background-container">
@@ -99,7 +99,7 @@ function EndUserReportIncident() {
                 <button>Submit</button>
             </form>
           </div>
-        </div>
+        </>
     );
 }
 
