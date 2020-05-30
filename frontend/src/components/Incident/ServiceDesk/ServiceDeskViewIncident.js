@@ -36,9 +36,6 @@ function ServiceDeskViewIncident() {
         <div className="background-container">
 
             <div style={{float: "left", textAlign: "left", lineHeight: "100%"}}>
-                <p>{sessionStorage.getItem('first_name')}</p>
-                <p>{sessionStorage.getItem('first_name')}</p>
-                <p>{sessionStorage.getItem('departmentID')}</p>
             </div>
 
             <table className="incident-table">

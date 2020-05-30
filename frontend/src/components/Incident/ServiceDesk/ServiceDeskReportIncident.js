@@ -1,17 +1,15 @@
-import React, { useEffect, useRef} from 'react';
+import React, { useEffect, useRef, useState} from 'react';
 
 import axios from 'axios';
 
 import '../../css/ReportIncident.css'
 
 function ServiceDeskReportIncident() {
-    const description = useRef(null);
     const affectedID = useRef(null);
-    // const investigatingDepartmentID = useRef(null);
-    // const timeRaised = useRef(null);
-    // const priority = useRef(null);
-    // const severity = useRef(null);
-    // const impact = useRef(null);
+    const department = useRef(null);
+    const description = useRef(null);
+    
+    const [priority, setPriority] = useState("P1")
 
     useEffect(() => {
         //Set date to today
@@ -24,18 +22,25 @@ function ServiceDeskReportIncident() {
 
         //Set affectedID to service desk user ID, able to change to another user
         affectedID.current.value = sessionStorage.getItem('username');
-    }, []);
 
+        department.current.value = 1;
+    }, []);
     
 
-    function postNewEndUserIncident(event) {
+    function postNewServiceDeskIncident(event) {
         event.preventDefault();
+
+        if(description.current.value.length > 200){
+            alert("More than 200 characters");
+            return false;
+        }
+
         axios.post('http://127.0.0.1/api/incident/new',  {
             'raisedID': sessionStorage.getItem('username'),
             'affectedID': affectedID.current.value,
-            'investigatingDepartmentID': 1,
+            'investigatingDepartmentID': department.current.value || 1,
             'description': description.current.value,
-            'priority': 'P1',
+            'priority': priority,
             'severity': 'S1',
             'impact': 'IMP3',
             'status': 'assigned'
@@ -56,32 +61,12 @@ function ServiceDeskReportIncident() {
         })
     }
 
-    // function postIncident(){
-    //     axios({
-    //         method:'post',
-    //         url:'http://127.0.0.1/api/incident/new',
-    //         params: {
-    //             'raisedID':sessionStorage.getItem('username'),
-    //             'affectedID':affectedID,
-    //             'investigatingDepartmentID':investigatingDepartmentID,
-    //             'description': description,
-    //             'timeRaised':timeRaised,
-    //             'priority':priority,
-    //             'severity':severity,
-    //             'impact':impact
-    //         }
-    //     });
-    // }
-
-    //Set raised for value to the service desk user's id, they can change to another user
-    
-
     return (
         <div className="col-md-4">
           <h2 className="subheading">Report Incident</h2>
 
           <div className="background-container">
-            <form onSubmit={postNewEndUserIncident}>
+            <form onSubmit={postNewServiceDeskIncident}>
                 <label>Date</label>
                 <input type="date" placeholder="Date" id="dateInput"></input>
                 <br />
@@ -99,13 +84,22 @@ function ServiceDeskReportIncident() {
                 <br />
 
                 <label>Department</label>
-                <input type="text" placeholder="Department"></input>
+                <input type="text" placeholder="Department" ref={department}></input>
                 <br />
 
                 <label>Incident Description</label>
                 <br />
                 <textarea placeholder="Max 200 characters" ref={description}></textarea>
                 <br />
+
+                <div className="incidentMeasurementSelect">
+                    <label htmlFor="prioritySelect">Priority</label>
+                    <select id="prioritySelect" defaultValue={priority} onChange={(event) => setPriority(event.target.value)}> 
+                        <option value="P1">P1</option>
+                        <option value="P2">P2</option>
+                        <option value="P3">P3</option>
+                    </select>
+                </div>
 
                 <button>Submit</button>
             </form>

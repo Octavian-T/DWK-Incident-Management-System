@@ -5,6 +5,7 @@
 
 .incident-table, .incident-table td, .incident-table th {
     border: 1px solid var(--primary);
+    padding: 10px;
 }
 
 .incident-table th {

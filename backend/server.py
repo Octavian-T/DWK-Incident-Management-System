@@ -174,7 +174,7 @@ def get_account(username):
 
 @app.route('/api/account/<id>/incidents', methods=['GET'])
 def get_account_incidents(id):
-    incidents = Incident.query.filter((Incident.raisedID == "test") | (Incident.affectedID == "test")).all()
+    incidents = Incident.query.filter((Incident.raisedID == id) | (Incident.affectedID == id)).all()
     if incidents is not None:
         all_incidents = {'data':[]}
         for incident in incidents:
