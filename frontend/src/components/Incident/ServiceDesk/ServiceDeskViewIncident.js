@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import '../../css/ViewIncident.css';
 
-function ServiceDeskViewIncident() {
+function ServiceDeskViewIncident(props) {
 
     const [incidents, setIncidents] = useState({ "data": [] });
 
@@ -27,7 +27,37 @@ function ServiceDeskViewIncident() {
         })
     }, []);
     
-    console.log(incidents);
+    //Set selected ID on row click
+    function onIncidentRowClick(noteID, clickOnShowNotes){
+        props.setSelectedIncidentID(noteID);
+        if (clickOnShowNotes) showNotes(noteID);
+    }
+
+    function showNotes(noteID){
+        console.log(`Showing notes for: ${noteID}`)
+        axios.get(`http://127.0.0.1/api/incident/${noteID}/notes`, {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
+        .then(res => {
+            var notes = res.data.data;
+            if(notes.length === 0){
+                alert("No notes for this incident");
+            }
+            else {
+                var notesLog = "";
+
+                for(var i = 0; i < notes.length; i++){
+                    notesLog += `[${notes[i].author}]: ${notes[i].text} (${notes[i].date})\n`;
+                }
+
+                alert(notesLog);
+            }
+        })
+        .catch(error => console.log(error))
+    }
 
     return (
       <>
@@ -35,7 +65,9 @@ function ServiceDeskViewIncident() {
 
         <div className="background-container">
 
-            <div style={{float: "left", textAlign: "left", lineHeight: "100%"}}>
+            <div>
+                <input type="text" placeholder="Enter username to find incidents"></input>
+                <button>Submit</button>
             </div>
 
             <table className="incident-table">
@@ -49,20 +81,22 @@ function ServiceDeskViewIncident() {
                         <th>Priority</th>
                         <th>Severity</th>
                         <th>Impact</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                         incidents.data.map(incident => (
-                            <tr key={incident.incidentID}>
+                            <tr key={incident.incidentID} onClick={() => onIncidentRowClick(incident.incidentID, false)}>
                                 <td>{incident.incidentID}</td>
                                 <td>Location</td>
                                 <td>{incident.description}</td>
                                 <td>{incident.investigatingDepartmentID}</td>
-                                <td>Notes</td>
+                                <td><p className="clickable" onClick={() => onIncidentRowClick(incident.incidentID, true)}>Notes</p></td>
                                 <td>{incident.priority}</td>
                                 <td>{incident.severity}</td>
                                 <td>{incident.impact}</td>
+                                <td>{incident.status}</td>
                             </tr>
                         ))
                     }
