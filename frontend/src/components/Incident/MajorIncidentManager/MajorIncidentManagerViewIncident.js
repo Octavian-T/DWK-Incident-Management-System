@@ -55,6 +55,12 @@ function MajorIncidentManagerViewIncident(props) {
         }
     }
 
+    // function updateIncidentInvestigatingDept(event, id){
+    //     incidents.data.forEach(element => {
+    //         console.log(element);
+    //     });
+    // }
+
     return (
       <>
         <h2 className="subheading">Major Incidents</h2>
