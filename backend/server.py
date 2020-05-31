@@ -161,6 +161,48 @@ def get_incident_major():
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
+@app.route('/api/incident/request/<id>', methods=['GET', 'DELETE'])
+def incident_request(id):
+    if request.method == 'GET':
+        if id == "all":
+            incidentRequests = IncidentRequestPriority.query.all()
+            if incidentRequests is not None:
+                
+                allIncidentRequests = { 'data': [] }
+                for incidentRequest in incidentRequests:
+                    allIncidentRequests['data'].append({
+                        'requestID':int(incidentRequest.requestID),
+                        'incidentID': int(incidentRequest.incidentID),
+                        'username':incidentRequest.username,
+                        'priority':incidentRequest.priority,
+                        'severity':incidentRequest.severity,
+                        'impact':incidentRequest.impact,
+                        'timeRequested':str(incidentRequest.timeRequested)
+                    })
+                return allIncidentRequests
+            else:
+                return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+        else:
+            incidentRequest = IncidentRequestPriority.query.get(id)
+            if incidentRequest is not None:
+                return {
+                    'requestID':int(incidentRequest.requestID),
+                    'username':incidentRequest.username,
+                    'priority':incidentRequest.priority,
+                    'severity':incidentRequest.severity,
+                    'impact':incidentRequest.impact,
+                    'timeRequested':str(incidentRequest.timeRequested)
+                }
+            else:
+                return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+                
+    elif request.method == 'DELETE':
+        db.engine.execute('DELETE FROM incident_request_priority WHERE requestID = %s' % id)
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
 #accounts
 
 @app.route('/api/account/<username>', methods = ['GET'])
