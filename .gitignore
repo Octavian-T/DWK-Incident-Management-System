@@ -2,3 +2,4 @@ backend/__pycache__/
 backend/Lib/
 backend/Scripts/
 backend/pyvenv.cfg
+.vscode/

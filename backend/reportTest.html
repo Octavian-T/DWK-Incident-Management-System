@@ -1,0 +1,46 @@
+<!-- Testing file-->
+<html>
+
+<head>
+    <script>
+        function total(mime) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    document.getElementById("output").innerText = request.response;
+                    if (mime == 'text/csv') {
+                        download_csv();
+                    }
+                }
+            };
+            request.open("GET", `/api/reports/total`, true);
+            request.setRequestHeader("accept", mime);
+            request.send();
+        };
+
+        function download_csv() {
+            var csv = document.getElementById("output").innerText;
+            console.log(csv);
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'total.csv';
+            hiddenElement.click();
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <label>Total</label>
+        <button onclick="total('text/csv')">CSV</button>&nbsp;
+        <button onclick="total('application/json')">JSON</button>&nbsp;
+        <button onclick="total('*/*')">All</button>&nbsp;
+        <button onclick="total()">None</button>&nbsp;
+    </div>
+    <br>
+    <div id="output"></div>
+</body>
+
+</html>
