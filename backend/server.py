@@ -39,12 +39,12 @@ def get_incident(id):
                     'affectedID':incident.affectedID,
                     'investigatingDepartmentID':incident.investigatingDepartmentID,
                     'description':incident.description,
-                    'timeRaised':incident.timeRaised,
+                    'timeRaised': str(incident.timeRaised),
                     'priority':incident.priority,
                     'severity':incident.severity,
                     'impact':incident.impact,
                     'status':incident.status,
-                    'timeCompleted':incident.timeCompleted
+                    'timeCompleted': str(incident.timeCompleted)
                 }
                 all_incidents['data'].append(this_incident)
             return all_incidents
@@ -57,12 +57,12 @@ def get_incident(id):
                     'affectedID':incident.affectedID,
                     'investigatingDepartmentID':incident.investigatingDepartmentID,
                     'description':incident.description,
-                    'timeRaised':incident.timeRaised,
+                    'timeRaised': str(incident.timeRaised),
                     'priority':incident.priority,
                     'severity':incident.severity,
                     'impact':incident.impact,
                     'status':incident.status,
-                    'timeCompleted':incident.timeCompleted
+                    'timeComplete': str(incident.timeCompleted)
                 }
             else:
                 return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
@@ -115,34 +115,6 @@ def get_incident(id):
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
-@app.route('/api/incident/<id>/updates', methods=['GET', 'POST'])
-def get_incident_updates(id):
-    if request.method == 'GET':
-        updates = IncidentUpdate.query.filter_by(incidentID = id).all()
-        if updates is not None:
-            all_updates = {'data':[]}
-            for update in updates:
-                this_update = {
-                    'updateID':update.updateID,
-                    'technicianID':update.technicianID,
-                    'incidentID':update.incidentID,
-                    'date':update.date,
-                    'description':update.description
-                }
-                all_updates['data'].append(this_update)
-            return all_updates
-        else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
-    elif request.method == 'POST':
-        if request.form is not None:
-            update = IncidentUpdate(technicianID = request.form['technicianID'], incidentID = request.form['incidentID'], date = datetime.datetime.now(), description = request.form['description'])
-            db.session.add(update)
-            db.session.commit()
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-        else:
-            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
-    else:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 @app.route('/api/incident/<id>/notes', methods=['GET'])
 def get_incident_notes(id):
@@ -157,7 +129,7 @@ def get_incident_notes(id):
                 'incidentID': note.incidentID,
                 'author': note.author,
                 'text': note.text,
-                'date': note.date
+                'date': str(note.date)
             })
         return all_notes
 
@@ -177,12 +149,12 @@ def get_incident_major():
                 'affectedID':incident.affectedID,
                 'investigatingDepartmentID':incident.investigatingDepartmentID,
                 'description':incident.description,
-                'timeRaised':incident.timeRaised,
+                'timeRaised':str(incident.timeRaised),
                 'priority':incident.priority,
                 'severity':incident.severity,
                 'impact':incident.impact,
                 'status':incident.status,
-                'timeCompleted':incident.timeCompleted
+                'timeCompleted': str(incident.timeCompleted)
             })
         return allMajorIncidents
 
@@ -322,6 +294,9 @@ def get_incident_note():
     db.session.commit()
 
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
+
 
 
 #Login
