@@ -9,6 +9,7 @@ import EndUserIncident from './Incident/EndUser/EndUserIncident';
 import ServiceDeskIncident from './Incident/ServiceDesk/ServiceDeskIncident';
 import TechnicianIncident from './Incident/Technician/TechnicianIncident'
 import MajorIncidentManagerIncident from './Incident/MajorIncidentManager/MajorIncidentManagerIncident';
+import QueueManagerIncident from './Incident/QueueManager/QueueManagerIncident';
 
 function Incident() {
 
@@ -34,7 +35,10 @@ function Incident() {
   if (depID === "1") incidentPage = <EndUserIncident />
   //Service desk staff
   else if (depID === "7") incidentPage = <ServiceDeskIncident />
+  //Technician
   else if (depID === "2") incidentPage = <TechnicianIncident />
+  //Queue Manager
+  else if (depID === "3") incidentPage = <QueueManagerIncident />
   //Major Incident Manager
   else if (depID === "5") incidentPage = <MajorIncidentManagerIncident />
   return (
