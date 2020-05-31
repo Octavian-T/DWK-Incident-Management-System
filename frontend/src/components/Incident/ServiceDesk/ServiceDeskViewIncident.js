@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import getUsersIncidents from '../IncidentFunctions';
+import { getUsersIncidents, showNotes } from '../IncidentFunctions';
 import '../../css/ViewIncident.css';
 
 function ServiceDeskViewIncident(props) {
 
-    const [incidents, setIncidents] = useState({ data : [] });
+    const [incidents, setIncidents] = useState({ 'data': [] });
     
     const searchUserIncidents = useRef(null);
     
     useEffect(() => {
-       getUsersIncidents(sessionStorage.getItem('username'), setIncidents);
+        const fetchIncidents = async () => {
+            await getUsersIncidents(sessionStorage.getItem('username'))
+            .then(resp => {
+                setIncidents(resp);
+                console.log(resp);
+            })
+        };
+        fetchIncidents();
     }, []);
     
     //Set selected ID on row click
@@ -19,37 +25,12 @@ function ServiceDeskViewIncident(props) {
         if (clickOnShowNotes) showNotes(noteID);
     }
     
+    //Handles the submit button when they search for a user
     function handleSearchUserIncidents(event){
         event.preventDefault();
-        getUsersIncidents(searchUserIncidents.current.value, setIncidents);
+        getUsersIncidents(searchUserIncidents.current.value).then(resp => setIncidents(resp));
     }
-
-    function showNotes(noteID){
-        console.log(`Showing notes for: ${noteID}`)
-        axios.get(`http://127.0.0.1/api/incident/${noteID}/notes`, {
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                'Access-Control-Allow-Origin': '*'
-            }
-        })
-        .then(res => {
-            const notes = res.data.data;
-            if(notes.length === 0){
-                alert("No notes for this incident");
-            }
-            else {
-                var notesLog = "";
-
-                for(var i = 0; i < notes.length; i++){
-                    notesLog += `[${notes[i].author}]: ${notes[i].text} (${notes[i].date})\n`;
-                }
-
-                alert(notesLog);
-            }
-        })
-        .catch(error => console.log(error))
-    }
-
+    
     return (
       <>
         <h2 className="subheading">My Incidents</h2>
@@ -93,6 +74,7 @@ function ServiceDeskViewIncident(props) {
                     }
                 </tbody>
             </table>
+
         </div>
       </>
     );

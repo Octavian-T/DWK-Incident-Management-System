@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
 
-import axios from 'axios';
+import { postNewNote } from '../IncidentFunctions';
 
 function EndUserAddNote(props){
 
     const newNote = useRef(null)
 
-    function postNewNote(event){
+    function handleNewNote(event){
         if(props.selectedIncidentID === undefined){
             alert("Please select an incident to add a note to");
             event.preventDefault();
@@ -16,25 +16,7 @@ function EndUserAddNote(props){
             event.preventDefault();
         }
         else {
-            axios.post('http://127.0.0.1/api/note/new',  {
-                'incidentID': props.selectedIncidentID,
-                'author': sessionStorage.getItem('username'),
-                'text': newNote.current.value
-            }, {
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                    'Access-Control-Allow-Origin': '*'
-                }
-            })
-            .then(res => {
-                //Successfully submitted new note, refresh page to show in table
-                if(res.status === 200){
-                    window.location.replace("/incidents")
-                }
-            })
-            .catch(error => {
-                alert(error.response);
-            })
+            postNewNote(props.selectedIncidentID, sessionStorage.getItem('username'), newNote.current.value);
         }
     }
     
@@ -43,7 +25,7 @@ function EndUserAddNote(props){
           <div className="background-container">
             <h2>Add Note</h2>
             <p>Current selected Incident ID: {props.selectedIncidentID || "none"}</p>
-            <form onSubmit={postNewNote}>
+            <form onSubmit={handleNewNote}>
                 <textarea placeholder="Max 250 characters" ref={newNote}/>
                 <button>Submit</button>
             </form>

@@ -194,7 +194,6 @@ def get_account(username):
             return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 @app.route('/api/account/<id>/incidents', methods=['GET'])
-@jwt_required
 def get_account_incidents(id):
     incidents = Incident.query.filter((Incident.raisedID == id) | (Incident.affectedID == id)).all()
     if incidents is not None:

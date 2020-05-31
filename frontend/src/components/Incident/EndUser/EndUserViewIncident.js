@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-import axios from 'axios';
+import { getUsersIncidents, showNotes } from '../IncidentFunctions';
 
 import '../../css/ViewIncident.css';
 
@@ -9,25 +8,14 @@ function EndUserViewIncident(props) {
     const [incidents, setIncidents] = useState({ "data": [] });
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1/api/account/${sessionStorage.getItem('username')}/incidents`, {
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                'Access-Control-Allow-Origin': '*'
-            }
-        })
-        .then(res => {
-            console.log(res);
-            setIncidents(res.data);
-        })
-        .catch(error => {
-            if(error.response.status === 422){
-                alert("Error " + error.response.status + " - Not logged in");
-                window.location.replace("/");
-            }
-            else {
-                alert(error);
-            }
-        })
+        const fetchIncidents = async () => {
+            await getUsersIncidents(sessionStorage.getItem('username'))
+            .then(resp => {
+                setIncidents(resp);
+                console.log(resp);
+            })
+        };
+        fetchIncidents();
     }, []);
 
     //Set selected ID on row click
@@ -36,31 +24,31 @@ function EndUserViewIncident(props) {
         if (clickOnShowNotes) showNotes(noteID);
     }
 
-    function showNotes(noteID){
-        console.log(`Showing notes for: ${noteID}`)
-        axios.get(`http://127.0.0.1/api/incident/${noteID}/notes`, {
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                'Access-Control-Allow-Origin': '*'
-            }
-        })
-        .then(res => {
-            var notes = res.data.data;
-            if(notes.length === 0){
-                alert("No notes for this incident");
-            }
-            else {
-                var notesLog = "";
+    // function showNotes(noteID){
+    //     console.log(`Showing notes for: ${noteID}`)
+    //     axios.get(`http://127.0.0.1/api/incident/${noteID}/notes`, {
+    //         headers: {
+    //             'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+    //             'Access-Control-Allow-Origin': '*'
+    //         }
+    //     })
+    //     .then(res => {
+    //         var notes = res.data.data;
+    //         if(notes.length === 0){
+    //             alert("No notes for this incident");
+    //         }
+    //         else {
+    //             var notesLog = "";
 
-                for(var i = 0; i < notes.length; i++){
-                    notesLog += `[${notes[i].author}]: ${notes[i].text} (${notes[i].date})\n`;
-                }
+    //             for(var i = 0; i < notes.length; i++){
+    //                 notesLog += `[${notes[i].author}]: ${notes[i].text} (${notes[i].date})\n`;
+    //             }
 
-                alert(notesLog);
-            }
-        })
-        .catch(error => console.log(error))
-    }
+    //             alert(notesLog);
+    //         }
+    //     })
+    //     .catch(error => console.log(error))
+    // }
 
     return (
       <>
