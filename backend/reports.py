@@ -1,9 +1,16 @@
-from flask import Blueprint, render_template, abort, make_response, request, send_file, jsonify
-#from server import *
-import Database
+"""
+Reporting API
+
+Handles reporting and exporting data
+"""
 from collections import Counter
 from io import StringIO
 import csv
+
+from flask import Blueprint, render_template, abort, make_response, request, send_file, jsonify
+
+#from server import *
+import Database
 
 
 reports = Blueprint('reports', __name__)
@@ -30,7 +37,7 @@ def total():
 
     query = Database.Incident.query.with_entities(
         Database.Incident.priority).all()
-    # Withcraft to fix 'sqlalchemy.util._collections.result'
+    # Witchcraft to fix 'sqlalchemy.util._collections.result'
     query = [i for (i, ) in query]
     query = Counter(query)
 
@@ -59,16 +66,14 @@ def create_response(data: dict):
     Returns:
         flask.wrappers.Response -- response with data as JSON or CSV, and HTTP status code
     """
-    response = make_response("Unknown error", 400)
     if request.accept_mimetypes.accept_json:
-        response.headers['Content-Type'] = 'application/json'
         response = make_response(data, 200)
+        response.headers['Content-Type'] = 'application/json'
 
     elif "text/csv" in request.accept_mimetypes:
         data = convert_to_csv(data)
-        print(type(data))
-        response.headers['Content-Type'] = 'text/csv'
         response = make_response(data, 200)
+        response.headers['Content-Type'] = 'text/csv'
 
     else:
         response = make_response(
@@ -77,7 +82,7 @@ def create_response(data: dict):
     return response
 
 
-def convert_to_csv(data : dict):
+def convert_to_csv(data: dict):
     """Converts data objects to CSV format
 
     Arguments:
@@ -88,8 +93,8 @@ def convert_to_csv(data : dict):
     """
     output = StringIO()
     writer = csv.writer(output, dialect='excel')
-    
-    #write header
+
+    # write header
     writer.writerow(data["data"][0].keys())
     # Make data into CSV
     for row in data["data"]:
