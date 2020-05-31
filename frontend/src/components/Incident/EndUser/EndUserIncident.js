@@ -10,6 +10,7 @@ function EndUserIncident() {
 
   return (
     <>
+      <h1>End User</h1>
       <div className="row">
         <div className="col-md-4">
           <EndUserReportIncident />

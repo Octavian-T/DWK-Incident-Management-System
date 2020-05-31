@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getUsersIncidents, showNotes } from '../IncidentFunctions';
+import { getMajorIncidents, getUsersIncidents, showNotes } from '../IncidentFunctions';
 
 import '../../css/ViewIncident.css';
 
-function EndUserViewIncident(props) {
+function MajorIncidentManagerViewIncident(props) {
 
     const [incidents, setIncidents] = useState({ "data": [] });
 
     useEffect(() => {
         const fetchIncidents = async () => {
-            await getUsersIncidents(sessionStorage.getItem('username')).then(resp => setIncidents(resp))
+            await getMajorIncidents().then(resp => setIncidents(resp))
         };
         fetchIncidents();
     }, []);
@@ -19,10 +19,30 @@ function EndUserViewIncident(props) {
         props.setSelectedIncidentID(noteID);
         if (clickOnShowNotes) showNotes(noteID);
     }
+    
+    function updateIncidentPriority(event, id){
+        for(var i = 0; i < incidents.data.length; i++){
+            if(id == incidents.data[i].incidentID){
+                incidents.data[i].priority = event.target.value;
+                console.log(incidents.data[i]);
+                //post new update
+            }
+        }
+    }
+
+    function updateIncidentSeverity(event, id){
+        for(var i = 0; i < incidents.data.length; i++){
+            if(id == incidents.data[i].incidentID){
+                incidents.data[i].severity = event.target.value;
+                console.log(incidents.data[i]);
+                //post new update
+            }
+        }
+    }
 
     return (
       <>
-        <h2 className="subheading">My Incidents</h2>
+        <h2 className="subheading">Major Incidents</h2>
 
         <div className="background-container">
 
@@ -54,8 +74,20 @@ function EndUserViewIncident(props) {
                                 <td>{incident.description}</td>
                                 <td>{incident.investigatingDepartmentID}</td>
                                 <td><p className="clickable" onClick={() => onIncidentRowClick(incident.incidentID, true)}>Notes</p></td>
-                                <td>{incident.priority}</td>
-                                <td>{incident.severity}</td>
+                                <td>
+                                    <select defaultValue={incident.priority} onChange={(event) => updateIncidentPriority(event, incident.incidentID)}>
+                                        <option value="P1">P1</option>
+                                        <option value="P2">P2</option>
+                                        <option value="P3">P3</option>
+                                    </select>
+                                </td>
+                                <td>
+                                <select defaultValue={incident.severity} onChange={(event) => updateIncidentSeverity(event, incident.incidentID)}>
+                                        <option value="S1">S1</option>
+                                        <option value="S2">S2</option>
+                                        <option value="S3">S3</option>
+                                    </select>
+                                    </td>
                                 <td>{incident.impact}</td>
                             </tr>
                         ))
@@ -68,4 +100,4 @@ function EndUserViewIncident(props) {
     );
 }
 
-export default EndUserViewIncident;
+export default MajorIncidentManagerViewIncident;

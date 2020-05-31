@@ -7,11 +7,7 @@ export async function getUsersIncidents(username){
             'Access-Control-Allow-Origin': '*'
         }
     })
-    .then(res => {
-        // setIncident(res.data);
-        // console.log(res.data);
-        return res.data;
-    })
+    .then(res => res.data)
     .catch(error => {
         if(error.response.status === 422){
             alert("Error " + error.response.status + " - Not logged in");
@@ -21,7 +17,25 @@ export async function getUsersIncidents(username){
             alert(error);
         }
     })
-    // return fetch(`http://127.0.0.1/api/account/${username}/incidents`).then(response => response.json());
+}
+
+export async function getMajorIncidents(){
+    return axios.get(`http://127.0.0.1/api/incident/major`, {
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(res => res.data)
+    .catch(error => {
+        if(error.response.status === 422){
+            alert("Error " + error.response.status + " - Not logged in");
+            window.location.replace("/");
+        }
+        else {
+            alert(error);
+        }
+    })
 }
 
 export function showNotes(noteID){
@@ -72,5 +86,4 @@ export function postNewNote(incidentID, author, note){
     })
 }
 
-
-export default { getUsersIncidents, showNotes, postNewNote }
+export default { getUsersIncidents, getMajorIncidents , showNotes, postNewNote }
