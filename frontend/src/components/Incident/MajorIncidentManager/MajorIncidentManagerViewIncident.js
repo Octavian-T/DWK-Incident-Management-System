@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getMajorIncidents, getUsersIncidents, showNotes } from '../IncidentFunctions';
+import { getMajorIncidents, updateIncident, showNotes } from '../IncidentFunctions';
 
 import '../../css/ViewIncident.css';
 
@@ -26,6 +26,7 @@ function MajorIncidentManagerViewIncident(props) {
                 incidents.data[i].priority = event.target.value;
                 console.log(incidents.data[i]);
                 //post new update
+                updateIncident(incidents.data[i]);
             }
         }
     }
@@ -36,6 +37,7 @@ function MajorIncidentManagerViewIncident(props) {
                 incidents.data[i].severity = event.target.value;
                 console.log(incidents.data[i]);
                 //post new update
+                updateIncident(incidents.data[i]);
             }
         }
     }

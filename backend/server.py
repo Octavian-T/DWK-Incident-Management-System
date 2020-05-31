@@ -103,9 +103,8 @@ def get_incident(id):
         timedate = data['timeCompleted']
         date = timedate[:10].split('-')
         time = timedate[11:].split(':')
-        db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, description = "{}", priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}" WHERE incidentID = "{}";'.format(
+        db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}" WHERE incidentID = "{}";'.format(
             data['investigatingDepartmentID'],
-            data['description'],
             str(data['priority']),
             str(data['severity']),
             str(data['impact']),
@@ -328,6 +327,7 @@ def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
     header['Access-Control-Allow-Headers'] = '*'
+    header['Access-Control-Allow-Methods'] = '*'
     return response
 
 if __name__ == "__main__":
