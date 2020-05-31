@@ -162,6 +162,30 @@ def get_incident_notes(id):
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
+@app.route('/api/incident/major', methods=['GET'])
+def get_incident_major():
+    majorIncidents = Incident.query.filter((Incident.priority=="P2") | (Incident.priority=="P3")).all()
+    if majorIncidents is not None:
+        
+        allMajorIncidents = { 'data': [] }
+        for incident in majorIncidents:
+            allMajorIncidents['data'].append({
+                'incidentID':incident.incidentID,
+                'raisedID':incident.raisedID,
+                'affectedID':incident.affectedID,
+                'investigatingDepartmentID':incident.investigatingDepartmentID,
+                'description':incident.description,
+                'timeRaised':incident.timeRaised,
+                'priority':incident.priority,
+                'severity':incident.severity,
+                'impact':incident.impact,
+                'status':incident.status,
+                'timeCompleted':incident.timeCompleted
+            })
+        return allMajorIncidents
+
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 #accounts
 
