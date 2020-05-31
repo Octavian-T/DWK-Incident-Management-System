@@ -10,7 +10,7 @@ function MajorIncidentManagerIncident() {
     <>
       <h1>Major Incident Manager</h1>
       <div className="row">
-        <div className="col-md-8">
+        <div className="col-md-10">
           <MajorIncidentManagerViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID}/>
         </div>
         

@@ -38,15 +38,26 @@ export async function getMajorIncidents(){
     })
 }
 
+export async function getDepartments(){
+    return axios.get(`http://127.0.0.1/api/department/all`, {
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(res => res.data)
+    .catch(error => {
+        if(error.response.status === 422){
+            alert("Error " + error.response.status + " - Not logged in");
+            window.location.replace("/");
+        }
+        else {
+            alert(error);
+        }
+    })
+}
+
 export function updateIncident(incidentData){
-    console.log({
-        investigatingDepartmentID: incidentData.investigatingDepartmentID,
-        priority: incidentData.priority,
-        severity: incidentData.severity,
-        impact: incidentData.impact,
-        status: incidentData.status,
-        timeCompleted: incidentData.timeCompleted
-    });
     axios.put(`http://127.0.0.1/api/incident/` + incidentData.incidentID,  {
         investigatingDepartmentID: incidentData.investigatingDepartmentID,
         priority: incidentData.priority,
@@ -119,4 +130,4 @@ export function postNewNote(incidentID, author, note){
     })
 }
 
-export default { getUsersIncidents, getMajorIncidents, updateIncident, showNotes, postNewNote }
+export default { getUsersIncidents, getMajorIncidents, getDepartments, updateIncident, showNotes, postNewNote }
