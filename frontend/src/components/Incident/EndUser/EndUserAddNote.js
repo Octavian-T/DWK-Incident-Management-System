@@ -5,9 +5,9 @@ import { postNewNote } from '../IncidentFunctions';
 function EndUserAddNote(props){
 
     const newNote = useRef(null)
-
+    
     function handleNewNote(event){
-        if(props.selectedIncidentID === undefined){
+        if(props.selectedIncident.incidentID === undefined){
             alert("Please select an incident to add a note to");
             event.preventDefault();
         }
@@ -16,7 +16,8 @@ function EndUserAddNote(props){
             event.preventDefault();
         }
         else {
-            postNewNote(props.selectedIncidentID, sessionStorage.getItem('username'), newNote.current.value);
+            console.log("POST")
+            postNewNote(props.selectedIncident.incidentID, sessionStorage.getItem('username'), newNote.current.value);
         }
     }
     
@@ -24,7 +25,7 @@ function EndUserAddNote(props){
         <>
           <div className="background-container">
             <h2>Add Note</h2>
-            <p>Current selected Incident ID: {props.selectedIncidentID || "none"}</p>
+            <p>Current selected Incident ID: {props.selectedIncident.incidentID || "none"}</p>
             <form onSubmit={handleNewNote}>
                 <textarea placeholder="Max 250 characters" ref={newNote}/>
                 <button>Submit</button>

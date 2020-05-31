@@ -1,6 +1,6 @@
 .navbar-container {
     background-color: var(--fourth);
-    height: 90%;
+    min-height: 100%;
     width: 250px;
     float: left;
     display: none;

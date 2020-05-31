@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import EndUserReportIncident from './EndUserReportIncident';
 import EndUserViewIncident from './EndUserViewIncident';
 import EndUserAddNote from './EndUserAddNote';
+import EndUserRequestPriority from './EndUserRequestPriority';
 
 function EndUserIncident() {
 
-  const [selectedIncidentID, setSelectedIncidentID] = useState();
+  const [selectedIncident, setSelectedIncident] = useState({});
 
   return (
     <>
@@ -17,8 +18,9 @@ function EndUserIncident() {
         </div>
         
         <div className="col-md-8">
-          <EndUserViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID}/>
-          <EndUserAddNote selectedIncidentID={selectedIncidentID}/>
+          <EndUserViewIncident selectedIncident={selectedIncident} setSelectedIncident={setSelectedIncident}/>
+          <EndUserAddNote selectedIncident={selectedIncident}/>
+          <EndUserRequestPriority selectedIncident={selectedIncident}/>
         </div>
       </div>
     </>

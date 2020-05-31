@@ -82,6 +82,30 @@ export function updateIncident(incidentData){
     })
 }
 
+export function postIncidentRequestPriority(incidentID, username, priority, severity, impact){
+    axios.post('http://127.0.0.1/api/incident/request/new',  {
+        'incidentID': incidentID,
+        'username': username,
+        'priority': priority,
+        'severity': severity,
+        'impact': impact
+    }, {
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(res => {
+        //Successfully submitted new note, refresh page to show in table
+        if(res.status === 200){
+            window.location.replace("/incidents")
+        }
+    })
+    .catch(error => {
+        alert(error.response);
+    })
+}
+
 export function showNotes(noteID){
     console.log(`Showing notes for: ${noteID}`)
     axios.get(`http://127.0.0.1/api/incident/${noteID}/notes`, {
@@ -130,4 +154,4 @@ export function postNewNote(incidentID, author, note){
     })
 }
 
-export default { getUsersIncidents, getMajorIncidents, getDepartments, updateIncident, showNotes, postNewNote }
+export default { getUsersIncidents, getMajorIncidents, postIncidentRequestPriority, getDepartments, updateIncident, showNotes, postNewNote }

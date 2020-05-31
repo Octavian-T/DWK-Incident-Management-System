@@ -112,7 +112,7 @@ function MajorIncidentManagerViewIncident(props) {
                                     </select>
                                 </td>
                                 <td>
-                                <select value={incident.severity} onChange={(event) => updateIncidentSeverity(event, incident.incidentID)}>
+                                    <select value={incident.severity} onChange={(event) => updateIncidentSeverity(event, incident.incidentID)}>
                                         <option value="S1">S1</option>
                                         <option value="S2">S2</option>
                                         <option value="S3">S3</option>

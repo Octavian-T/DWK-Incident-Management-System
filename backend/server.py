@@ -161,7 +161,7 @@ def get_incident_major():
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
-@app.route('/api/incident/request/<id>', methods=['GET', 'DELETE'])
+@app.route('/api/incident/request/<id>', methods=['GET', 'POST', 'DELETE'])
 def incident_request(id):
     if request.method == 'GET':
         if id == "all":
@@ -187,6 +187,7 @@ def incident_request(id):
             if incidentRequest is not None:
                 return {
                     'requestID':int(incidentRequest.requestID),
+                    'incidentID': int(incidentRequest.incidentID),
                     'username':incidentRequest.username,
                     'priority':incidentRequest.priority,
                     'severity':incidentRequest.severity,
@@ -195,7 +196,20 @@ def incident_request(id):
                 }
             else:
                 return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
-                
+    
+    elif request.method == 'POST' and id == 'new':
+        newIncidentRequest = IncidentRequestPriority(
+            incidentID = request.get_json()['incidentID'],
+            username = request.get_json()['username'],
+            priority = request.get_json()['priority'],
+            severity = request.get_json()['severity'],
+            impact = request.get_json()['impact'],
+            timeRequested = datetime.datetime.now()
+        )
+        db.session.add(newIncidentRequest)
+        db.session.commit()
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
     elif request.method == 'DELETE':
         db.engine.execute('DELETE FROM incident_request_priority WHERE requestID = %s' % id)
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
@@ -330,7 +344,7 @@ def get_incident_note():
         incidentID=request.get_json()['incidentID'],
         author=request.get_json()['author'],
         text=request.get_json()['text'],
-        date=str(datetime.datetime.now())
+        date=datetime.datetime.now()
     )
     db.session.add(note)
     db.session.commit()

@@ -199,7 +199,7 @@ for i in range(0, 15):
 
 
 accounts = ["test", "testsd", "testmim"]
-departments = [1, 2, 5]
+departments = [1, 7, 5]
 roles = ["End user", "Service Desk", "Major Incident Manager"]
 for i in range(0, len(accounts)):
     db.session.add(Account(username=accounts[i], password='098f6bcd4621d373cade4e832627b4f6', firstName=accounts[i], lastName=accounts[i]))

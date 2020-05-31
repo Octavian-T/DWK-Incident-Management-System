@@ -15,9 +15,13 @@ function EndUserViewIncident(props) {
     }, []);
 
     //Set selected ID on row click
-    function onIncidentRowClick(noteID, clickOnShowNotes){
-        props.setSelectedIncidentID(noteID);
-        if (clickOnShowNotes) showNotes(noteID);
+    function onIncidentRowClick(noteAuthorID, clickOnShowNotes){
+        incidents.data.forEach(incident => {
+            if(incident.incidentID === noteAuthorID){
+                props.setSelectedIncident(incident);
+                if (clickOnShowNotes) showNotes(noteAuthorID);
+            }
+        });
     }
 
     return (
