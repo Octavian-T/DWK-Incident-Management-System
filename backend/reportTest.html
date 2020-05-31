@@ -42,6 +42,21 @@
             hiddenElement.download = 'total.csv';
             hiddenElement.click();
         }
+
+        function ttr(mime) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    document.getElementById("output").innerText = request.response;
+                    if (mime == 'text/csv') {
+                        download_csv();
+                    }
+                }
+            };
+            request.open("GET", `/api/reports/ttr/1`, true);
+            request.setRequestHeader("accept", mime);
+            request.send();
+        };
     </script>
 </head>
 
@@ -53,6 +68,11 @@
         <button onclick="total('*/*')">All</button>&nbsp;
         <button onclick="total()">None</button>&nbsp;&nbsp;
         <button onclick="totalDate('*/*')">Date</button>&nbsp;
+    </div>
+    <div>
+        <label>TTR</label>
+        <button onclick="ttr('text/csv')">CSV</button>&nbsp;
+        <button onclick="ttr('application/json')">JSON</button>&nbsp;
     </div>
     <br>
     <div id="output"></div>

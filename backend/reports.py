@@ -10,7 +10,7 @@ import datetime
 
 from flask import Blueprint, render_template, abort, make_response, request, send_file, jsonify
 
-#from server import *
+# from server import *
 import Database
 
 
@@ -63,6 +63,22 @@ def total():
             "total": query[key]
         }
         incidents["data"].append(incident)
+    return create_response(incidents)
+
+
+@reports.route("/api/reports/ttr/<id>", methods=["GET"])
+def ttr(id):
+    query = Database.Incident.query.filter(Database.Incident.incidentID == id).with_entities(
+        Database.Incident.timeRaised, Database.Incident.timeCompleted).first()
+
+    time_to_resolve = query[1] - query[0]
+
+    incidents = {"data": []}
+    incidents["data"].append({
+        "incidentID": id,
+        "ttr": time_to_resolve.total_seconds()
+    })
+
     return create_response(incidents)
 
 # endregion
