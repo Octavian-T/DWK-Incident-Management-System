@@ -3,6 +3,7 @@ from flask import *
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from Database import *
+from reports import reports
 
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
@@ -10,6 +11,7 @@ from flask_jwt_extended import (
 )
 
 app = Flask(__name__)
+app.register_blueprint(reports)
 
 app.config['JSON_SORT_KEYS'] = False
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
