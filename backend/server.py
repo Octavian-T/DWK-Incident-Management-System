@@ -103,14 +103,15 @@ def get_incident(id):
         timedate = data['timeCompleted']
         date = timedate[:10].split('-')
         time = timedate[11:].split(':')
-        db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, description = "{}", priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}";'.format(
+        db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, description = "{}", priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}" WHERE incidentID = "{}";'.format(
             data['investigatingDepartmentID'],
             data['description'],
             str(data['priority']),
             str(data['severity']),
             str(data['impact']),
             str(data['status']),
-            datetime.datetime(int(date[0]), int(date[1]), int(date[2]), int(time[0]), int(time[1]))))
+            datetime.datetime(int(date[0]), int(date[1]), int(date[2]), int(time[0]), int(time[1])),
+            id))
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
