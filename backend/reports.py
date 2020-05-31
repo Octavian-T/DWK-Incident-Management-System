@@ -6,6 +6,7 @@ Handles reporting and exporting data
 from collections import Counter
 from io import StringIO
 import csv
+import datetime
 
 from flask import Blueprint, render_template, abort, make_response, request, send_file, jsonify
 
@@ -25,18 +26,32 @@ def default():
 # region Routes
 
 
+def toDate(dateString):
+    return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
+
+
 @reports.route("/api/reports/total", methods=["GET"])
 def total():
     """This method returns the total number of raised incidents for each priority level.
 
     The request must specify an accepted mimetype, either application/json or text/csv
 
+    Arguments:
+        from -- from date, e.g. 2020-01-20. Default is 2000-01-01
+        to -- to date, e.g. 2020-01-20. Default is today
+
     Returns:
         flask.response -- http response
     """
 
-    query = Database.Incident.query.with_entities(
-        Database.Incident.priority).all()
+    if "from" in request.args or "to" in request.args:
+        from_date = request.args.get('from', default="2000-01-01")
+        to_date = request.args.get('to', default=datetime.date.today())
+        query = Database.Incident.query.filter(Database.Incident.timeRaised >= from_date,
+                                               Database.Incident.timeRaised <= to_date).with_entities(Database.Incident.priority).all()
+    else:
+        query = Database.Incident.query.with_entities(
+            Database.Incident.priority).all()
     # Witchcraft to fix 'sqlalchemy.util._collections.result'
     query = [i for (i, ) in query]
     query = Counter(query)
@@ -49,8 +64,8 @@ def total():
         }
         incidents["data"].append(incident)
     return create_response(incidents)
-# endregion
 
+# endregion
 # region utility methods
 
 
