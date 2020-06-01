@@ -37,8 +37,8 @@ def total():
     The request must specify an accepted mimetype, either application/json or text/csv
 
     Request Arguments:
-        from -- from date, e.g. 2020-01-20. Default is 2000-01-01
-        to -- to date, e.g. 2020-01-20. Default is today
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
 
     Returns:
         flask.response -- http response
@@ -46,8 +46,7 @@ def total():
 
     if "from" in request.args or "to" in request.args:
         from_date = request.args.get('from', default="2000-01-01")
-        to_date = request.args.get(
-            'to', default=datetime.date.today() + datetime.timedelta(days=1))
+        to_date = request.args.get('to', default="2999-12-31")
         query = Database.Incident.query.filter(Database.Incident.timeRaised >= from_date,
                                                Database.Incident.timeRaised <= to_date).with_entities(Database.Incident.priority).all()
     else:
@@ -74,16 +73,15 @@ def ttr(id):
     Arguments:
         id -- incidentID, or 'all' to get all incidents
     Request Arguments:
-        from -- from date, e.g. 2020-01-20. Default is 2000-01-01
-        to -- to date, e.g. 2020-01-20. Default is today
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
 
     Returns:
-        [type] -- [description]
+        flask.response -- http response
     """
     incidents = {"data": []}
     from_date = request.args.get('from', default="2000-01-01")
-    to_date = request.args.get(
-        'to', default=datetime.date.today() + datetime.timedelta(days=1))
+    to_date = request.args.get('to', default="2999-12-31")
 
     if id == "all":
         query = Database.Incident.query.filter(
