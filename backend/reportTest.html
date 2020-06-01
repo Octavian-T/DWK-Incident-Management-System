@@ -57,6 +57,20 @@
             request.setRequestHeader("accept", mime);
             request.send();
         };
+        function dept(mime) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    document.getElementById("output").innerText = request.response;
+                    if (mime == 'text/csv') {
+                        download_csv();
+                    }
+                }
+            };
+            request.open("GET", `/api/reports/departments/totals/all`, true);
+            request.setRequestHeader("accept", mime);
+            request.send();
+        };
     </script>
 </head>
 
@@ -74,8 +88,14 @@
         <button onclick="ttr('text/csv')">CSV</button>&nbsp;
         <button onclick="ttr('application/json')">JSON</button>&nbsp;
     </div>
+    </div>
+    <div>
+        <label>Department totals</label>
+        <button onclick="dept('text/csv')">CSV</button>&nbsp;
+        <button onclick="dept('application/json')">JSON</button>&nbsp;
+    </div>
     <br>
-    <div id="output"></div>
+    <div id="output" style="font-family: 'Courier New', Courier, monospace;"></div>
 </body>
 
 </html>
