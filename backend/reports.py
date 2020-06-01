@@ -71,12 +71,15 @@ def ttr(id):
     query = Database.Incident.query.filter(Database.Incident.incidentID == id).with_entities(
         Database.Incident.timeRaised, Database.Incident.timeCompleted).first()
 
-    time_to_resolve = query[1] - query[0]
+    if query[1] == None:
+        time_to_resolve = -1
+    else:
+        time_to_resolve = datetime.timedelta.total_seconds(query[1] - query[0])
 
     incidents = {"data": []}
     incidents["data"].append({
         "incidentID": id,
-        "ttr": time_to_resolve.total_seconds()
+        "ttr": time_to_resolve
     })
 
     return create_response(incidents)
