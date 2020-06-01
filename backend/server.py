@@ -1,6 +1,7 @@
+#pylint: disable=W0614
 import datetime
-from flask import *
-from flask_cors import CORS
+from flask import * 
+from flask_cors import CORS 
 from flask_sqlalchemy import SQLAlchemy
 from Database import *
 from reports import reports

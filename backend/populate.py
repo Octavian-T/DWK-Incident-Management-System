@@ -1,3 +1,4 @@
+#pylint: disable=W0614
 from flask_sqlalchemy import SQLAlchemy
 
 from Database import *
