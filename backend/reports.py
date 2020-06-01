@@ -1,9 +1,17 @@
-from flask import Blueprint, render_template, abort, make_response, request, send_file, jsonify
-#from server import *
-import Database
+"""
+Reporting API
+
+Handles reporting and exporting data
+"""
 from collections import Counter
 from io import StringIO
 import csv
+import datetime
+
+from flask import Blueprint, render_template, abort, make_response, request, send_file, jsonify
+
+# from server import *
+import Database
 
 
 reports = Blueprint('reports', __name__)
@@ -18,19 +26,33 @@ def default():
 # region Routes
 
 
+def toDate(dateString):
+    return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
+
+
 @reports.route("/api/reports/total", methods=["GET"])
 def total():
     """This method returns the total number of raised incidents for each priority level.
 
     The request must specify an accepted mimetype, either application/json or text/csv
 
+    Arguments:
+        from -- from date, e.g. 2020-01-20. Default is 2000-01-01
+        to -- to date, e.g. 2020-01-20. Default is today
+
     Returns:
         flask.response -- http response
     """
 
-    query = Database.Incident.query.with_entities(
-        Database.Incident.priority).all()
-    # Withcraft to fix 'sqlalchemy.util._collections.result'
+    if "from" in request.args or "to" in request.args:
+        from_date = request.args.get('from', default="2000-01-01")
+        to_date = request.args.get('to', default=datetime.date.today())
+        query = Database.Incident.query.filter(Database.Incident.timeRaised >= from_date,
+                                               Database.Incident.timeRaised <= to_date).with_entities(Database.Incident.priority).all()
+    else:
+        query = Database.Incident.query.with_entities(
+            Database.Incident.priority).all()
+    # Witchcraft to fix 'sqlalchemy.util._collections.result'
     query = [i for (i, ) in query]
     query = Counter(query)
 
@@ -42,8 +64,27 @@ def total():
         }
         incidents["data"].append(incident)
     return create_response(incidents)
-# endregion
 
+
+@reports.route("/api/reports/ttr/<id>", methods=["GET"])
+def ttr(id):
+    query = Database.Incident.query.filter(Database.Incident.incidentID == id).with_entities(
+        Database.Incident.timeRaised, Database.Incident.timeCompleted).first()
+
+    if query[1] == None:
+        time_to_resolve = -1
+    else:
+        time_to_resolve = datetime.timedelta.total_seconds(query[1] - query[0])
+
+    incidents = {"data": []}
+    incidents["data"].append({
+        "incidentID": id,
+        "ttr": time_to_resolve
+    })
+
+    return create_response(incidents)
+
+# endregion
 # region utility methods
 
 
@@ -59,16 +100,14 @@ def create_response(data: dict):
     Returns:
         flask.wrappers.Response -- response with data as JSON or CSV, and HTTP status code
     """
-    response = make_response("Unknown error", 400)
     if request.accept_mimetypes.accept_json:
-        response.headers['Content-Type'] = 'application/json'
         response = make_response(data, 200)
+        response.headers['Content-Type'] = 'application/json'
 
     elif "text/csv" in request.accept_mimetypes:
         data = convert_to_csv(data)
-        print(type(data))
-        response.headers['Content-Type'] = 'text/csv'
         response = make_response(data, 200)
+        response.headers['Content-Type'] = 'text/csv'
 
     else:
         response = make_response(
@@ -77,7 +116,7 @@ def create_response(data: dict):
     return response
 
 
-def convert_to_csv(data : dict):
+def convert_to_csv(data: dict):
     """Converts data objects to CSV format
 
     Arguments:
@@ -88,8 +127,8 @@ def convert_to_csv(data : dict):
     """
     output = StringIO()
     writer = csv.writer(output, dialect='excel')
-    
-    #write header
+
+    # write header
     writer.writerow(data["data"][0].keys())
     # Make data into CSV
     for row in data["data"]:
