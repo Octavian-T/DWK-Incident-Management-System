@@ -36,7 +36,7 @@ def total():
 
     The request must specify an accepted mimetype, either application/json or text/csv
 
-    Arguments:
+    Request Arguments:
         from -- from date, e.g. 2020-01-20. Default is 2000-01-01
         to -- to date, e.g. 2020-01-20. Default is today
 
@@ -68,6 +68,17 @@ def total():
 
 @reports.route("/api/reports/ttr/<id>", methods=["GET"])
 def ttr(id):
+    """This method returns a list of incident IDs and the Time-To-Resolve (TTR) in seconds.
+
+    Arguments:
+        id -- incidentID, or 'all' to get all incidents
+    Request Arguments:
+        from -- from date, e.g. 2020-01-20. Default is 2000-01-01
+        to -- to date, e.g. 2020-01-20. Default is today
+
+    Returns:
+        [type] -- [description]
+    """
     incidents = {"data": []}
     from_date = request.args.get('from', default="2000-01-01")
     to_date = request.args.get('to', default=datetime.date.today() + datetime.timedelta(days=1))
