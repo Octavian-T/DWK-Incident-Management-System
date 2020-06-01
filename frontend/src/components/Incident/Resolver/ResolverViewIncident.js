@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import '../../css/ViewIncident.css';
 
-function QueueManagerViewIncident(props) {
+function ResolverViewIncident(props) {
 
     const [incidents, setIncidents] = useState({ "data": [] });
 
@@ -26,6 +26,8 @@ function QueueManagerViewIncident(props) {
             }
         })
     }, []);
+    
+    console.log(incidents);
 
     //Set selected ID on row click
     function onIncidentRowClick(noteID){
@@ -41,7 +43,7 @@ function QueueManagerViewIncident(props) {
             props.setPriority(response.data.priority);
             props.setSeverity(response.data.severity);
             props.setPriority(response.data.priority);
-            //props.setInvestigatingUnitID(response.data.investigatingUnitID);
+            props.setInvestigatingUnitID(response.data.investigatingUnitID);
             props.setInvestigatingDepartmentID(response.data.investigatingDepartmentID);
         })
         .catch(function(error){
@@ -107,4 +109,4 @@ function QueueManagerViewIncident(props) {
     );
 }
 
-export default QueueManagerViewIncident;
+export default ResolverViewIncident;

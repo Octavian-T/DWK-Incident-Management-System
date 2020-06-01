@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import axios from 'axios';
 
 import '../../css/ReportIncident.css'
 
-function QueueManagerReportIncident(props) {
-    //const [investigatingUnitID, setInvestigatingUnitID] = useRef({"data":[]});
-    const [data, setData] = useState({'data':[]});
+function ResolverReportIncident(props) {
+    const investigatingDepartmentID = useRef(null);
+    const investigatingUnitID = useRef(null);
 
-    function updateQueueManagerIncident(event) {
+    function updateResolverIncident(event) {
         event.preventDefault();
 
         axios.put('http://127.0.0.1/api/incident/'+props.selectedIncidentID,  {
-            'investigatingDepartmentID':props.investigatingDepartmentID,
-            //'investigatingUnitID':investigatingUnitID.current.value,
+            'investigatingDepartmentID':investigatingDepartmentID.current.value,
+            'investigatingUnitID':investigatingUnitID.current.value,
             'priority':props.priority,
             'severity':props.severity,
             'impact':props.impact
@@ -35,30 +35,24 @@ function QueueManagerReportIncident(props) {
             alert(error.response);
         })
     }
-    var departments = {'data':[]};
-    axios.get('http://127.0.0.1/api/department/all', {
-        headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-            'Access-Control-Allow-Origin': '*'
-    }}).then(res=>{
-        setData(res.data);
-        console.log(departments.data);
+    useEffect(function (){
+        const fetchData = async function () {
+            await getDepartments().then(function (resp){
+                
+            })
+        }
     })
-    .catch(error =>{
-        alert(error);
-    });
 
-    useEffect( ()=>{
+    useEffect(function (){
         document.getElementById('dateInput').value=props.date;
         //document.getElementById('timeInput').value=date[4]+date[5];
         document.getElementById('incidentID').value=props.selectedIncidentID;
-        //document.getElementById('investigatingUnitID').value=props.investigatingUnitID;
-        //document.getElementById('departmentSelect').value=props.investigatingDepartmentID;
+        document.getElementById('investigatingUnitID').value=props.investigatingUnitID;
+        document.getElementById('investigatingDepartmentID').value=props.investigatingDepartmentID;
         document.getElementById('impactSelect').value = props.impact;
         document.getElementById('prioritySelect').value = props.priority;
         document.getElementById('severitySelect').value = props.severity;
     });
-
     return (
         <>
           <h2 className="subheading">Report Incident</h2>
@@ -77,18 +71,12 @@ function QueueManagerReportIncident(props) {
 
                 <label>Unit</label>
                 <br />
-                <input type="text" id="investigatingUnitID"></input>
+                <input type="text" ref={investigatingUnitID} id="investigatingUnitID"></input>
                 <br />
 
                 <label>Department</label>
                 <br />
-                <select id="departmentSelect" onChange={event => props.setInvestigatingDepartmentID(event.target.value)}> 
-                        {
-                        data.data.map(department=>
-                            <option value={department.departmentID}>{department.name}</option>
-                        )
-                        }
-                </select>
+                <input type="text" ref={investigatingDepartmentID} id="investigatingDepartmentID"></input>
                 <br />
 
             </div>
@@ -123,11 +111,11 @@ function QueueManagerReportIncident(props) {
                     </select>
                 </div>
                 <br />
-                <button onClick={updateQueueManagerIncident}>Submit</button>
+                <button onClick={updateResolverIncident}>Submit</button>
             </div>
           </form>
         </>
     );
 }
 
-export default QueueManagerReportIncident;
+export default ResolverReportIncident;
