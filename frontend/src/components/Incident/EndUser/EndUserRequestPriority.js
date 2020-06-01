@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { postIncidentRequestPriority } from '../IncidentFunctions';
 
@@ -7,11 +7,16 @@ function EndUserRequestPriority(props){
     const [priority, setPriority] = useState("P1");
     const [severity, setSeverity] = useState("S1");
     const [impact, setImpact] = useState("IMP1");
-    
+
+    const reason = useRef(null);
     
     function handleNewPriorityRequest(e) {
       if (props.selectedIncident.incidentID === undefined) {
-        alert("Please select a incident to request priority")
+        alert("Please select a incident to request priority");
+        e.preventDefault();
+      }
+      else if (reason.current.value.length < 1 || reason.current.value.length > 250) {
+        alert("Reason must be between 1-250 characters");
         e.preventDefault();
       }
       
@@ -22,7 +27,7 @@ function EndUserRequestPriority(props){
           e.preventDefault();
       }
       else {
-        postIncidentRequestPriority(props.selectedIncident.incidentID, sessionStorage.getItem('username'), priority, severity, impact);
+        postIncidentRequestPriority(props.selectedIncident.incidentID, sessionStorage.getItem('username'), priority, severity, impact, reason.current.value);
       }
     }
 
@@ -53,6 +58,7 @@ function EndUserRequestPriority(props){
                     <option value="IMP2">IMP2</option>
                     <option value="IMP3">IMP3</option>
                 </select>
+                <textarea ref={reason} placeholder="Max 250 characters"/>
                 <button>Request</button>
             </form>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import MajorIncidentManagerViewIncident from './MajorIncidentManagerViewIncident';
+import MajorIncidentManagerApprovePriorityRequest from './MajorIncidentManagerApprovePriorityRequest';
 
 function MajorIncidentManagerIncident() {
 
@@ -12,6 +13,7 @@ function MajorIncidentManagerIncident() {
       <div className="row">
         <div className="col-md-10">
           <MajorIncidentManagerViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID}/>
+          <MajorIncidentManagerApprovePriorityRequest />
         </div>
         
         <div className="col-md-4">

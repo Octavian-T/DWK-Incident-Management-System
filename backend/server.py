@@ -177,6 +177,7 @@ def incident_request(id):
                         'priority':incidentRequest.priority,
                         'severity':incidentRequest.severity,
                         'impact':incidentRequest.impact,
+                        'reason': incidentRequest.reason,
                         'timeRequested':str(incidentRequest.timeRequested)
                     })
                 return allIncidentRequests
@@ -192,6 +193,7 @@ def incident_request(id):
                     'priority':incidentRequest.priority,
                     'severity':incidentRequest.severity,
                     'impact':incidentRequest.impact,
+                    'reason': incidentRequest.reason,
                     'timeRequested':str(incidentRequest.timeRequested)
                 }
             else:
@@ -204,6 +206,7 @@ def incident_request(id):
             priority = request.get_json()['priority'],
             severity = request.get_json()['severity'],
             impact = request.get_json()['impact'],
+            reason = request.get_json()['reason'],
             timeRequested = datetime.datetime.now()
         )
         db.session.add(newIncidentRequest)
@@ -211,7 +214,12 @@ def incident_request(id):
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
     elif request.method == 'DELETE':
-        db.engine.execute('DELETE FROM incident_request_priority WHERE requestID = %s' % id)
+        data = request.get_json()
+        IncidentRequest = IncidentRequestPriority.query.filter_by(requestID=data['requestID']).first()
+        print(IncidentRequest)
+        db.engine.execute('DELETE FROM incident_request_priority WHERE requestID = %s' % data['requestID'])
+        print('UPDATE Incident SET Priority = "%s", Severity = "%s", Impact = "%s" WHERE IncidentID = %d' % (data['newPriority'], data['newSeverity'], data['newImpact'], IncidentRequest.incidentID))
+        db.engine.execute('UPDATE Incident SET Priority = "%s", Severity = "%s", Impact = "%s" WHERE IncidentID = %d' % (data['newPriority'], data['newSeverity'], data['newImpact'], IncidentRequest.incidentID))
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
     else:

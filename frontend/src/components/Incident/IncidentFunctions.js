@@ -57,6 +57,25 @@ export async function getDepartments(){
     })
 }
 
+export async function getIncidentPriorityRequests(){
+    return axios.get(`http://127.0.0.1//api/incident/request/all`, {
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(res => res.data)
+    .catch(error => {
+        if(error.response.status === 422){
+            alert("Error " + error.response.status + " - Not logged in");
+            window.location.replace("/");
+        }
+        else {
+            alert(error);
+        }
+    })
+}
+
 export function updateIncident(incidentData){
     axios.put(`http://127.0.0.1/api/incident/` + incidentData.incidentID,  {
         investigatingDepartmentID: incidentData.investigatingDepartmentID,
@@ -82,13 +101,34 @@ export function updateIncident(incidentData){
     })
 }
 
-export function postIncidentRequestPriority(incidentID, username, priority, severity, impact){
+export function approveIncidentPriorityRequest(requestID, newPriority, newSeverity, newImpact){
+    axios.delete('http://127.0.0.1/api/incident/request/delete',
+    {
+        data: { 'requestID': requestID, 'newPriority': newPriority, 'newSeverity': newSeverity, 'newImpact': newImpact },
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(res => {
+        //Successfully approved incident
+        if(res.status === 200){
+            window.location.replace("/incidents")
+        }
+    })
+    .catch(error => {
+        alert(error.response);
+    })
+}
+
+export function postIncidentRequestPriority(incidentID, username, priority, severity, impact, reason){
     axios.post('http://127.0.0.1/api/incident/request/new',  {
         'incidentID': incidentID,
         'username': username,
         'priority': priority,
         'severity': severity,
-        'impact': impact
+        'impact': impact,
+        'reason': reason
     }, {
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
@@ -154,4 +194,4 @@ export function postNewNote(incidentID, author, note){
     })
 }
 
-export default { getUsersIncidents, getMajorIncidents, postIncidentRequestPriority, getDepartments, updateIncident, showNotes, postNewNote }
+export default { getUsersIncidents, getMajorIncidents, postIncidentRequestPriority, approveIncidentPriorityRequest, getDepartments, getIncidentPriorityRequests, updateIncident, showNotes, postNewNote }

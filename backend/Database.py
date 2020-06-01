@@ -64,4 +64,5 @@ class IncidentRequestPriority(db.Model):
     priority = db.Column(db.String(2), nullable=False)
     severity = db.Column(db.String(2), nullable=False)
     impact = db.Column(db.String(2), nullable=False)
+    reason = db.Column(db.String(250))
     timeRequested = db.Column(db.DateTime())

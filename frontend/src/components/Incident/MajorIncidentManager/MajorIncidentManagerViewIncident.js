@@ -13,7 +13,7 @@ function MajorIncidentManagerViewIncident(props) {
             await getMajorIncidents().then(resp => setIncidents(resp));
             await getDepartments().then(resp => {
                 setDepartments(resp);
-                console.log(resp);
+                // console.log(resp);
             });
         };
         fetchData();
