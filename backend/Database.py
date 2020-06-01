@@ -28,12 +28,15 @@ class Incident(db.Model):
     status = db.Column(db.String(32), nullable=False)
     timeCompleted = db.Column(db.DateTime())
 
-class IncidentUpdate(db.Model):
-    updateID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
-    technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
-    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
-    date = db.Column(db.DateTime())
-    description = db.Column(db.String(250))
+# class IncidentUpdate(db.Model):
+#     updateID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
+#     incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
+#     technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+#     priority = db.Column(db.String(2), nullable=False)
+#     severity = db.Column(db.String(2), nullable=False)
+#     impact = db.Column(db.String(2), nullable=False)
+#     date = db.Column(db.DateTime())
+#     description = db.Column(db.String(250))
 
 class Unit(db.Model):
     unitID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
@@ -46,3 +49,20 @@ class Message(db.Model):
     senderID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
     receiverID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
     date = db.Column(db.DateTime())
+
+class Note(db.Model):
+    noteID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
+    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
+    author = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    text = db.Column(db.String(250))
+    date = db.Column(db.DateTime())
+
+class IncidentRequestPriority(db.Model):
+    requestID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
+    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
+    username = db.Column(db.String(32), db.ForeignKey('account.username'))
+    priority = db.Column(db.String(2), nullable=False)
+    severity = db.Column(db.String(2), nullable=False)
+    impact = db.Column(db.String(2), nullable=False)
+    reason = db.Column(db.String(250))
+    timeRequested = db.Column(db.DateTime())

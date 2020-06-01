@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import './css/ViewIncident.css';
+import '../../css/ViewIncident.css';
 
-function ViewIncident() {
+function TechnicianViewIncident(props) {
 
     const [incidents, setIncidents] = useState({ "data": [] });
 
@@ -15,7 +15,7 @@ function ViewIncident() {
                 'Access-Control-Allow-Origin': '*'
             }
         })
-        .then((res) => {
+        .then(res => {
             console.log(res);
             setIncidents(res.data);
         })
@@ -29,8 +29,13 @@ function ViewIncident() {
     
     console.log(incidents);
 
+    //Set selected ID on row click
+    function onIncidentRowClick(noteID){
+        props.setSelectedIncidentID(noteID);
+    }
+
     return (
-      <div className="col-md-8">
+      <>
         <h2 className="subheading">View Incident</h2>
 
         <div className="background-container">
@@ -68,12 +73,12 @@ function ViewIncident() {
                 <tbody>
                     {
                         incidents.data.map(incident => (
-                            <tr key={incident.incidentID}>
+                            <tr key={incident.incidentID} onClick={() => onIncidentRowClick(incident.incidentID, false)}>
                                 <td>{incident.incidentID}</td>
                                 <td>Location</td>
                                 <td>{incident.description}</td>
                                 <td>{incident.investigatingDepartmentID}</td>
-                                <td>Notes</td>
+                                <td><p className="clickable" onClick={() => onIncidentRowClick(incident.incidentID, true)}>Notes</p></td>
                                 <td>{incident.priority}</td>
                                 <td>{incident.severity}</td>
                                 <td>{incident.impact}</td>
@@ -83,8 +88,8 @@ function ViewIncident() {
                 </tbody>
             </table>
         </div>
-      </div>
+      </>
     );
 }
 
-export default ViewIncident;
+export default TechnicianViewIncident;

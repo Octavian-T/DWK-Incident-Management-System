@@ -1,3 +1,7 @@
 input[type=time]::-webkit-datetime-edit-hour-field {
     color: var(--primary);
 }
+
+.incidentMeasurementSelect > label{
+    display: block;
+}

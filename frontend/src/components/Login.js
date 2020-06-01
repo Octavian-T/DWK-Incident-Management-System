@@ -24,16 +24,19 @@ function Login() {
         sessionStorage.setItem('first_name', res.data.firstName);
         sessionStorage.setItem('last_name', res.data.lastName);
         sessionStorage.setItem('departmentID', res.data.departmentID);
+        sessionStorage.setItem('department', res.data.department);
 
         //Go to home page
         window.location.replace("/")
       })
       .catch(error => {
         //Alert error, reset password input box
-        console.log(error.response.data);
         
         passwordInput.current.value = "";
-        alert(error.response.data.error);
+        if(error.response){
+          console.log(error.response.data);
+          alert(error.response.data.error);
+        }
       });
   }
 

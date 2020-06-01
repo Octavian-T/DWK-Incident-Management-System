@@ -5,6 +5,7 @@
 
 .incident-table, .incident-table td, .incident-table th {
     border: 1px solid var(--primary);
+    padding: 10px;
 }
 
 .incident-table th {
@@ -20,4 +21,8 @@
 
 .incident-table tbody tr:nth-child(even){
     background-color: white;
+}
+
+.incident-table tbody tr td .clickable {
+    cursor: pointer;
 }

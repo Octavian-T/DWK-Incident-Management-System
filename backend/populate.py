@@ -11,9 +11,10 @@ db.session.query(Account).delete()
 db.session.query(Department).delete()
 db.session.query(DepartmentMember).delete()
 db.session.query(Incident).delete()
-db.session.query(IncidentUpdate).delete()
+# db.session.query(IncidentUpdate).delete()
 db.session.query(Unit).delete()
 db.session.query(Message).delete()
+db.session.query(Note).delete()
 
 #techs
 account1 = Account(username = 'mud', password = '5f4dcc3b5aa765d61d8327deb882cf99', firstName = 'Ianis', lastName = 'Smith')
@@ -96,14 +97,14 @@ incident8 = Incident(incidentID = 8, raisedID = 'mud', affectedID = 'mud', inves
 incident9 = Incident(incidentID = 9, raisedID = 'pour', affectedID = 'pour', investigatingDepartmentID = None, description = 'Something broke', timeRaised = datetime.datetime(2019,7,20,6,4), priority = 'P2', severity = 'S3', impact = 'impact', status = 'submited', timeCompleted = None)
 incident10 = Incident(incidentID = 10, raisedID = 'tent', affectedID = 'tent', investigatingDepartmentID = None, description = 'Something broke', timeRaised = datetime.datetime(2019,9,2,7,50), priority = 'P3', severity = 'S3', impact = 'impact', status = 'submited', timeCompleted = None)
 
-incidentUpdate1 = IncidentUpdate(updateID = 1, technicianID = 'mud', incidentID = 1, date = datetime.datetime(2019,2,15,14,5), description = 'We fixed something')
-incidentUpdate2 = IncidentUpdate(updateID = 2, technicianID = 'vote', incidentID = 2, date = datetime.datetime(2019,2,20,15,3), description = 'We fixed something')
-incidentUpdate3 = IncidentUpdate(updateID = 3, technicianID = 'leak', incidentID = 3, date = datetime.datetime(2019,3,5,14,5), description = 'We fixed something')
-incidentUpdate4 = IncidentUpdate(updateID = 4, technicianID = 'corner', incidentID = 4, date = datetime.datetime(2019,4,30,7,5), description = 'We fixed something')
-incidentUpdate5 = IncidentUpdate(updateID = 5, technicianID = 'aspect', incidentID = 5, date = datetime.datetime(2019,5,30,14,5), description = 'We fixed something')
-incidentUpdate6 = IncidentUpdate(updateID = 6, technicianID = 'pour', incidentID = 6, date = datetime.datetime(2019,6,15,14,5), description = 'We fixed something')
-incidentUpdate7 = IncidentUpdate(updateID = 7, technicianID = 'greet', incidentID = 7, date = datetime.datetime(2019,9,15,14,5), description = 'We fixed something')
-incidentUpdate8 = IncidentUpdate(updateID = 8, technicianID = 'Tent', incidentID = 8, date = datetime.datetime(2019,10,15,14,5), description = 'We fixed something')
+# incidentUpdate1 = IncidentUpdate(updateID = 1, technicianID = 'mud', incidentID = 1, date = datetime.datetime(2019,2,15,14,5), description = 'We fixed something')
+# incidentUpdate2 = IncidentUpdate(updateID = 2, technicianID = 'vote', incidentID = 2, date = datetime.datetime(2019,2,20,15,3), description = 'We fixed something')
+# incidentUpdate3 = IncidentUpdate(updateID = 3, technicianID = 'leak', incidentID = 3, date = datetime.datetime(2019,3,5,14,5), description = 'We fixed something')
+# incidentUpdate4 = IncidentUpdate(updateID = 4, technicianID = 'corner', incidentID = 4, date = datetime.datetime(2019,4,30,7,5), description = 'We fixed something')
+# incidentUpdate5 = IncidentUpdate(updateID = 5, technicianID = 'aspect', incidentID = 5, date = datetime.datetime(2019,5,30,14,5), description = 'We fixed something')
+# incidentUpdate6 = IncidentUpdate(updateID = 6, technicianID = 'pour', incidentID = 6, date = datetime.datetime(2019,6,15,14,5), description = 'We fixed something')
+# incidentUpdate7 = IncidentUpdate(updateID = 7, technicianID = 'greet', incidentID = 7, date = datetime.datetime(2019,9,15,14,5), description = 'We fixed something')
+# incidentUpdate8 = IncidentUpdate(updateID = 8, technicianID = 'Tent', incidentID = 8, date = datetime.datetime(2019,10,15,14,5), description = 'We fixed something')
 
 db.session.add(account1)
 db.session.add(account2)
@@ -176,14 +177,14 @@ db.session.add(incident8)
 db.session.add(incident9)
 db.session.add(incident10)
 
-db.session.add(incidentUpdate1)
-db.session.add(incidentUpdate2)
-db.session.add(incidentUpdate3)
-db.session.add(incidentUpdate4)
-db.session.add(incidentUpdate5)
-db.session.add(incidentUpdate6)
-db.session.add(incidentUpdate7)
-db.session.add(incidentUpdate8)
+# db.session.add(incidentUpdate1)
+# db.session.add(incidentUpdate2)
+# db.session.add(incidentUpdate3)
+# db.session.add(incidentUpdate4)
+# db.session.add(incidentUpdate5)
+# db.session.add(incidentUpdate6)
+# db.session.add(incidentUpdate7)
+# db.session.add(incidentUpdate8)
 
 
 for i in range(0, 15):
@@ -192,5 +193,16 @@ for i in range(0, 15):
 
 for i in range(0, 15):
     db.session.add(Message(messageID=(i+1), messageText=(str(random.randint(10000,900000))), senderID=random.randint(1, 24), receiverID=random.randint(1, 24), date=datetime.datetime(2019,10,15,14,5)))
+
+for i in range(0, 15):
+    db.session.add(Note(noteID=(i+1), incidentID=random.randint(1, 10), author="test", text=(str(random.randint(10000,900000))), date=datetime.datetime(2019,10,15,14,5)))
+
+
+accounts = ["test", "testsd", "testmim"]
+departments = [1, 7, 5]
+roles = ["End user", "Service Desk", "Major Incident Manager"]
+for i in range(0, len(accounts)):
+    db.session.add(Account(username=accounts[i], password='098f6bcd4621d373cade4e832627b4f6', firstName=accounts[i], lastName=accounts[i]))
+    db.session.add(DepartmentMember(username=accounts[i], departmentID=departments[i], role=roles[i]))
 
 db.session.commit()
