@@ -105,6 +105,52 @@ def ttr(id):
     return create_response(incidents)
 
 
+@reports.route("/api/reports/departments/totals/<id>", methods=["GET"])
+def department_total(id):
+    """This method returns the total number of incidents and total TTR for each department.
+
+    Arguments:
+        id -- departmentID, or 'all' to get all departments
+    Request Arguments:
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
+
+    Returns:
+        flask.response -- http response
+    """
+
+    departments = {"data": []}
+    from_date = request.args.get('from', default="2000-01-01")
+    to_date = request.args.get(
+        'to', default="2999-12-31")
+
+    if id == "all":
+        query = Database.Department.query.with_entities(
+            Database.Department.departmentID).all()
+        department_list = [id for id, in query]
+    else:
+        department_list = [id]
+
+    for departmentID in department_list:
+        query = Database.Incident.query.filter(Database.Incident.investigatingDepartmentID == departmentID,
+                                               Database.Incident.timeRaised >= from_date,
+                                               Database.Incident.timeRaised <= to_date).with_entities(
+            Database.Incident.incidentID, Database.Incident.investigatingDepartmentID, Database.Incident.timeRaised, Database.Incident.timeCompleted).all()
+        department = {
+            "departmentID": departmentID,
+            "total_incidents": 0,
+            "total_ttr": 0
+        }
+        for incident in query:
+            ttr = calc_ttr(incident[2], incident[3])
+            ttr = ttr if ttr != -1 else 0
+            department["total_incidents"] += 1
+            department["total_ttr"] += ttr
+        departments["data"].append(department)
+
+    return create_response(departments)
+
+
 # endregion
 # region utility methods
 
