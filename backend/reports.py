@@ -99,8 +99,8 @@ def ttr(id):
         query = Database.Incident.query.filter(Database.Incident.incidentID == id).with_entities(
             Database.Incident.incidentID, Database.Incident.timeRaised, Database.Incident.timeCompleted).first()
         incident = {
-            "incidentID": incident[0],
-            "ttr": calc_ttr(incident[1], incident[2])
+            "incidentID": query[0],
+            "ttr": calc_ttr(query[1], query[2])
         }
         incidents["data"].append(incident)
 
@@ -109,6 +109,8 @@ def ttr(id):
 
 # endregion
 # region utility methods
+
+
 def calc_ttr(timeRaised, timeCompleted):
     """Calculates the Time To Resolve (TTR)
 
