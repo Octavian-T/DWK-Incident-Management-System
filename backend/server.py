@@ -100,17 +100,21 @@ def get_incident(id):
         #     return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
     elif request.method == 'PUT':
         data = request.get_json()
-        timedate = data['timeCompleted']
-        date = timedate[:10].split('-')
-        time = timedate[11:].split(':')
-        db.engine.execute('UPDATE Incident Set investigatingDepartmentID = {}, priority = "{}", severity = "{}", impact = "{}", status = "{}", timeCompleted = "{}" WHERE incidentID = "{}";'.format(
-            data['investigatingDepartmentID'],
-            str(data['priority']),
-            str(data['severity']),
-            str(data['impact']),
-            str(data['status']),
-            datetime.datetime(int(date[0]), int(date[1]), int(date[2]), int(time[0]), int(time[1])),
-            id))
+        sql_string = '  '
+        if 'priority' in data:
+            sql_string = sql_string + 'priority = "{}", '.format(str(data['priority']))
+        if 'severity' in data:
+            sql_string = sql_string + 'severity = "{}", '.format(str(data['severity']))
+        if 'impact' in data:
+            sql_string = sql_string + 'impact = "{}", '.format(str(data['impact']))
+        if 'status' in data:
+            sql_string = sql_string + 'status = "{}", '.format(str(data['status']))
+        if 'investigatingDepartmentID' in data:
+            sql_string = sql_string + 'investigatingDepartmentID = {}, '.format(data['investigatingDepartmentID'])
+        if 'closeIncident' in data:
+            sql_string = sql_string + 'timeCompleted = "{}" '.format(str(datetime.datetime.now()))
+        sql_string = sql_string[1:-1]
+        db.engine.execute('UPDATE Incident Set {} WHERE incidentID = "{}";'.format(sql_string[1:-1],id))
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
