@@ -216,10 +216,11 @@ def incident_request(id):
     elif request.method == 'DELETE':
         data = request.get_json()
         IncidentRequest = IncidentRequestPriority.query.filter_by(requestID=data['requestID']).first()
-        print(IncidentRequest)
+        # print(IncidentRequest)
         db.engine.execute('DELETE FROM incident_request_priority WHERE requestID = %s' % data['requestID'])
-        print('UPDATE Incident SET Priority = "%s", Severity = "%s", Impact = "%s" WHERE IncidentID = %d' % (data['newPriority'], data['newSeverity'], data['newImpact'], IncidentRequest.incidentID))
-        db.engine.execute('UPDATE Incident SET Priority = "%s", Severity = "%s", Impact = "%s" WHERE IncidentID = %d' % (data['newPriority'], data['newSeverity'], data['newImpact'], IncidentRequest.incidentID))
+        if(data['approved'] == True):
+            # print('UPDATE Incident SET Priority = "%s", Severity = "%s", Impact = "%s" WHERE IncidentID = %d' % (data['newPriority'], data['newSeverity'], data['newImpact'], IncidentRequest.incidentID))
+            db.engine.execute('UPDATE Incident SET Priority = "%s", Severity = "%s", Impact = "%s" WHERE IncidentID = %d' % (data['newPriority'], data['newSeverity'], data['newImpact'], IncidentRequest.incidentID))
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
     else:

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { getIncidentPriorityRequests, approveIncidentPriorityRequest } from '../IncidentFunctions';
 
 function MajorIncidentManagerApprovePriorityRequest(){
 
     const [incidentRequests, setIncidentRequests] = useState({ 'data': [] });
+
+    const approveSelect = useRef(null);
 
     useEffect(() => {
         const fetchIncidentPriorityRequests = async () => {
@@ -46,7 +48,8 @@ function MajorIncidentManagerApprovePriorityRequest(){
                                 <td>{incidentRequest.impact}</td>
                                 <td>{incidentRequest.reason}</td>
                                 <td>
-                                    <select onChange={() => approveIncidentPriorityRequest(incidentRequest.requestID, incidentRequest.priority, incidentRequest.severity, incidentRequest.impact)}>
+                                    <select ref={approveSelect} onChange={() => approveIncidentPriorityRequest(incidentRequest.requestID, incidentRequest.priority, incidentRequest.severity, incidentRequest.impact, approveSelect.current.value)}>
+                                        <option value="-">-</option>
                                         <option value="No">No</option>
                                         <option value="Yes">Yes</option>
                                     </select>
@@ -56,6 +59,7 @@ function MajorIncidentManagerApprovePriorityRequest(){
                     }
                 </tbody>
             </table>
+            { incidentRequests.data.length === 0 ? <p>No current incident requests</p> : "" }
             
         </div>
       </>

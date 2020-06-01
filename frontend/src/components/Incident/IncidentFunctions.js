@@ -101,10 +101,10 @@ export function updateIncident(incidentData){
     })
 }
 
-export function approveIncidentPriorityRequest(requestID, newPriority, newSeverity, newImpact){
+export function approveIncidentPriorityRequest(requestID, newPriority, newSeverity, newImpact, approved){
     axios.delete('http://127.0.0.1/api/incident/request/delete',
     {
-        data: { 'requestID': requestID, 'newPriority': newPriority, 'newSeverity': newSeverity, 'newImpact': newImpact },
+        data: { 'requestID': requestID, 'newPriority': newPriority, 'newSeverity': newSeverity, 'newImpact': newImpact, 'approved':  approved === "Yes"},
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
             'Access-Control-Allow-Origin': '*'
