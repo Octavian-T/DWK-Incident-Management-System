@@ -46,7 +46,8 @@ def total():
 
     if "from" in request.args or "to" in request.args:
         from_date = request.args.get('from', default="2000-01-01")
-        to_date = request.args.get('to', default=datetime.date.today()+ datetime.timedelta(days=1))
+        to_date = request.args.get(
+            'to', default=datetime.date.today() + datetime.timedelta(days=1))
         query = Database.Incident.query.filter(Database.Incident.timeRaised >= from_date,
                                                Database.Incident.timeRaised <= to_date).with_entities(Database.Incident.priority).all()
     else:
@@ -81,39 +82,48 @@ def ttr(id):
     """
     incidents = {"data": []}
     from_date = request.args.get('from', default="2000-01-01")
-    to_date = request.args.get('to', default=datetime.date.today() + datetime.timedelta(days=1))
+    to_date = request.args.get(
+        'to', default=datetime.date.today() + datetime.timedelta(days=1))
 
     if id == "all":
         query = Database.Incident.query.filter(
             Database.Incident.timeRaised >= from_date, Database.Incident.timeRaised <= to_date).with_entities(
             Database.Incident.incidentID, Database.Incident.timeRaised, Database.Incident.timeCompleted).all()
         for incident in query:
-            incident = calc_ttr(incident)
+            incident = {
+                "incidentID": incident[0],
+                "ttr": calc_ttr(incident[1], incident[2])
+            }
             incidents["data"].append(incident)
     else:
         query = Database.Incident.query.filter(Database.Incident.incidentID == id).with_entities(
             Database.Incident.incidentID, Database.Incident.timeRaised, Database.Incident.timeCompleted).first()
-        incident = calc_ttr(query)
+        incident = {
+            "incidentID": incident[0],
+            "ttr": calc_ttr(incident[1], incident[2])
+        }
         incidents["data"].append(incident)
 
     return create_response(incidents)
 
 
-def calc_ttr(incident: list):
-    if incident[2] == None:
-        time_to_resolve = -1
-    else:
-        time_to_resolve = datetime.timedelta.total_seconds(
-            incident[2] - incident[1])
-
-    incident = {
-        "incidentID": incident[0],
-        "ttr": time_to_resolve
-    }
-    return incident
-
 # endregion
 # region utility methods
+def calc_ttr(timeRaised, timeCompleted):
+    """Calculates the Time To Resolve (TTR)
+
+    Arguments:
+        timeRaised {datetime}-- start date
+        timeCompleted {datetime} -- end date
+
+    Returns:
+        int -- TTR in seconds
+    """
+    if timeCompleted == None:
+        ttr = -1
+    else:
+        ttr = datetime.timedelta.total_seconds(timeCompleted - timeRaised)
+    return ttr
 
 
 def create_response(data: dict):
