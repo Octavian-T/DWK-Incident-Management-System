@@ -151,6 +151,50 @@ def department_total(id):
     return create_response(departments)
 
 
+@reports.route("/api/reports/technicians/totals/<id>", methods=["GET"])
+def technicians_totals(id):
+    """This method returns the total amount of incidents and time spent for a technician.
+
+    Arguments:
+        id  -- technicianID, or 'all' to get all technicians
+    Request Arguments:
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
+
+    Returns:
+        flask.response -- http response
+    """
+    technicians = {"data": []}
+    from_date = request.args.get('from', default="2000-01-01")
+    to_date = request.args.get(
+        'to', default="2999-12-31")
+
+    incident_team = ["Technician", "Que Manager", "Major Incident Manager", "Resolver"]
+
+    if id == "all":
+        query = Database.DepartmentMember.query.filter(Database.DepartmentMember.role.in_(incident_team)).with_entities(
+            Database.DepartmentMember.username).all()
+        technicians_list = [id for id, in query]
+    else:
+        technicians_list = [id]
+
+    for username in technicians_list:
+        query = Database.Incident.query.filter(Database.IncidentUpdate.technicianID == username,
+                                               Database.IncidentUpdate.date >= from_date,
+                                               Database.IncidentUpdate.date <= to_date).with_entities(
+            Database.IncidentUpdate.technicianID, Database.IncidentUpdate.timeSpent).all()
+        technician = {
+            "technicianID": username,
+            "total_incidents": 0,
+            "total_time_spent": 0
+        }
+        for incident in query:
+            technician["total_incidents"] += 1
+            technician["total_time_spent"] += incident[1]
+        technicians["data"].append(technician)
+    return create_response(technicians)
+
+
 @reports.route("/api/reports/incidents/single/<id>", methods=["GET"])
 def incidents_single(id):
     return "Foo"
