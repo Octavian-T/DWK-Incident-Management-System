@@ -26,12 +26,8 @@ def default():
 # region Routes
 
 
-def toDate(dateString):
-    return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
-
-
 @reports.route("/api/reports/incidents/totals", methods=["GET"])
-def incidents_total():
+def incidents_totals():
     """This method returns the total number of raised incidents for each priority level.
 
     The request must specify an accepted mimetype, either application/json or text/csv
@@ -106,7 +102,7 @@ def incidents_ttr(id):
 
 
 @reports.route("/api/reports/departments/totals/<id>", methods=["GET"])
-def department_total(id):
+def departments_totals(id):
     """This method returns the total number of incidents and total TTR for each department.
 
     Arguments:
@@ -169,7 +165,8 @@ def technicians_totals(id):
     to_date = request.args.get(
         'to', default="2999-12-31")
 
-    incident_team = ["Technician", "Que Manager", "Major Incident Manager", "Resolver"]
+    incident_team = ["Technician", "Que Manager",
+                     "Major Incident Manager", "Resolver"]
 
     if id == "all":
         query = Database.DepartmentMember.query.filter(Database.DepartmentMember.role.in_(incident_team)).with_entities(
