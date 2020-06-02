@@ -31,7 +31,7 @@ def toDate(dateString):
 
 
 @reports.route("/api/reports/incidents/totals", methods=["GET"])
-def total():
+def incidents_total():
     """This method returns the total number of raised incidents for each priority level.
 
     The request must specify an accepted mimetype, either application/json or text/csv
@@ -67,7 +67,7 @@ def total():
 
 
 @reports.route("/api/reports/incidents/ttr/<id>", methods=["GET"])
-def ttr(id):
+def incidents_ttr(id):
     """This method returns a list of incident IDs and the Time-To-Resolve (TTR) in seconds.
 
     Arguments:
@@ -150,6 +150,10 @@ def department_total(id):
 
     return create_response(departments)
 
+
+@reports.route("/api/reports/incidents/single/<id>", methods=["GET"])
+def incidents_single(id):
+    return "Foo"
 
 # endregion
 # region utility methods
