@@ -30,7 +30,7 @@ def toDate(dateString):
     return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
 
 
-@reports.route("/api/reports/total", methods=["GET"])
+@reports.route("/api/reports/incidents/totals", methods=["GET"])
 def total():
     """This method returns the total number of raised incidents for each priority level.
 
@@ -66,7 +66,7 @@ def total():
     return create_response(incidents)
 
 
-@reports.route("/api/reports/ttr/<id>", methods=["GET"])
+@reports.route("/api/reports/incidents/ttr/<id>", methods=["GET"])
 def ttr(id):
     """This method returns a list of incident IDs and the Time-To-Resolve (TTR) in seconds.
 

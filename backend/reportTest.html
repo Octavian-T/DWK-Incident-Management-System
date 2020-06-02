@@ -13,7 +13,7 @@
                     }
                 }
             };
-            request.open("GET", `/api/reports/total`, true);
+            request.open("GET", `/api/reports/incidents/totals`, true);
             request.setRequestHeader("accept", mime);
             request.send();
         };
@@ -27,7 +27,7 @@
                     }
                 }
             };
-            request.open("GET", `/api/reports/total?from=2019-02-01&to=2019-04-30`, true);
+            request.open("GET", `/api/reports/incidents/totals?from=2019-02-01&to=2019-04-30`, true);
             request.setRequestHeader("accept", mime);
             request.send();
         };
@@ -53,7 +53,7 @@
                     }
                 }
             };
-            request.open("GET", `/api/reports/ttr/1`, true);
+            request.open("GET", `/api/reports/incidents/ttr/1`, true);
             request.setRequestHeader("accept", mime);
             request.send();
         };
