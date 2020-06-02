@@ -45,7 +45,8 @@ def get_incident(id):
                     'severity':incident.severity,
                     'impact':incident.impact,
                     'status':incident.status,
-                    'timeCompleted': str(incident.timeCompleted)
+                    'timeCompleted': str(incident.timeCompleted),
+                    'investigatingTechnicianID':incident.investigatingTechnicianID
                 }
                 all_incidents['data'].append(this_incident)
             return all_incidents

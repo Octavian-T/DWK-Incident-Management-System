@@ -20,6 +20,7 @@ class Incident(db.Model):
     raisedID = db.Column(db.String(32), db.ForeignKey('account.username'))
     affectedID = db.Column(db.String(32), db.ForeignKey('account.username'))
     investigatingDepartmentID = db.Column(db.String(32), db.ForeignKey('department.departmentID'))
+    investigatingTechnicianID = db.Column(db.String(32), db.ForeignKey('account.username'))
     description = db.Column(db.String(250))
     timeRaised = db.Column(db.DateTime())
     priority = db.Column(db.String(2), nullable=False)
