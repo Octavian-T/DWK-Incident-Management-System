@@ -28,15 +28,16 @@ class Incident(db.Model):
     status = db.Column(db.String(32), nullable=False)
     timeCompleted = db.Column(db.DateTime())
 
-# class IncidentUpdate(db.Model):
-#     updateID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
-#     incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
-#     technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
-#     priority = db.Column(db.String(2), nullable=False)
-#     severity = db.Column(db.String(2), nullable=False)
-#     impact = db.Column(db.String(2), nullable=False)
-#     date = db.Column(db.DateTime())
-#     description = db.Column(db.String(250))
+class IncidentUpdate(db.Model):
+    updateID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
+    incidentID = db.Column(db.Integer(), db.ForeignKey('incident.incidentID'), nullable=False)
+    technicianID = db.Column(db.String(32), db.ForeignKey('account.username'), nullable=False)
+    # priority = db.Column(db.String(2), nullable=False)
+    # severity = db.Column(db.String(2), nullable=False)
+    # impact = db.Column(db.String(2), nullable=False)
+    description = db.Column(db.String(250))
+    timeSpent = db.Column(db.Integer(), nullable=False)
+    date = db.Column(db.DateTime())
 
 class Unit(db.Model):
     unitID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
