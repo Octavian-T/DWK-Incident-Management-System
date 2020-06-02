@@ -2,14 +2,17 @@ import React, { useEffect, useRef, useState} from 'react';
 
 import axios from 'axios';
 
+import { getDepartments } from '../IncidentFunctions';
+
 import '../../css/ReportIncident.css'
 
 function ServiceDeskReportIncident() {
     const affectedID = useRef(null);
-    const department = useRef(null);
     const description = useRef(null);
+    const departmentSelect = useRef(null);
     
     const [priority, setPriority] = useState("P1")
+    const [departments, setDepartments] = useState({ "data": [] });
 
     useEffect(() => {
         //Set date to today
@@ -23,12 +26,19 @@ function ServiceDeskReportIncident() {
         //Set affectedID to service desk user ID, able to change to another user
         affectedID.current.value = sessionStorage.getItem('username');
 
-        department.current.value = 1;
+        //Get departments data
+        const fetchData = async () => {
+            await getDepartments().then(resp => setDepartments(resp));
+        };
+        fetchData();
     }, []);
     
 
     function postNewServiceDeskIncident(event) {
         event.preventDefault();
+        console.log(departmentSelect);
+        console.log(departmentSelect.current);
+        console.log(departmentSelect.current.value);
 
         if(description.current.value.length > 200){
             alert("More than 200 characters");
@@ -38,7 +48,7 @@ function ServiceDeskReportIncident() {
         axios.post('http://127.0.0.1/api/incident/new',  {
             'raisedID': sessionStorage.getItem('username'),
             'affectedID': affectedID.current.value,
-            'investigatingDepartmentID': department.current.value || 1,
+            'investigatingDepartmentID': departmentSelect.current.value || 1,
             'description': description.current.value,
             'priority': priority,
             'severity': 'S1',
@@ -83,9 +93,15 @@ function ServiceDeskReportIncident() {
                 <input type="text" placeholder="Affected user:" ref={affectedID}></input>
                 <br />
 
-                <label>Department</label>
-                <input type="text" placeholder="Department" ref={department}></input>
-                <br />
+                <td>
+                    <select value={departments.departmentID} ref={departmentSelect}>
+                        {
+                            departments.data.map(department => (
+                                <option key={department.departmentID} value={department.departmentID}>{`${department.departmentID} - ${department.name}`}</option>
+                            ))
+                        }
+                    </select>
+                </td>
 
                 <label>Incident Description</label>
                 <br />

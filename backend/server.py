@@ -96,6 +96,8 @@ def get_incident(id):
             timeCompleted = datetime.datetime.now() if 'closeIncident' in request.get_json() else None)
         db.session.add(newIncident)
         db.session.commit()
+        
+
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
         # else:
         #     return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
@@ -120,6 +122,26 @@ def get_incident(id):
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
+@app.route('/api/incident/<id>/updates', methods = ['GET'])
+def get_incident_updates(id):
+    updates = IncidentUpdate.query.filter_by(incidentID=id).all()
+
+    if updates is not None:
+        
+        all_updates = { 'data': [] }
+        for update in updates:
+            all_updates['data'].append({
+                'updateID': int(update.updateID),
+                'incidentID': int(update.incidentID),
+                'technicianID': update.technicianID,
+                'description': update.description,
+                'updateType': update.updateType,
+                'timeSpent': int(update.timeSpent),
+                'date': str(update.date)
+            })
+        return all_updates
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 @app.route('/api/incident/<id>/notes', methods=['GET'])
 def get_incident_notes(id):
