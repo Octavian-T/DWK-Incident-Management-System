@@ -79,6 +79,7 @@ function QueueManagerReportIncident(props) {
     return (
         <>
           <h2 className="subheading">Report Incident</h2>
+
           <form >
             <div className="background-container">
                 <label>Date</label>
