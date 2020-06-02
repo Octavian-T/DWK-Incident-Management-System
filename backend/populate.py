@@ -12,7 +12,7 @@ db.session.query(Account).delete()
 db.session.query(Department).delete()
 db.session.query(DepartmentMember).delete()
 db.session.query(Incident).delete()
-# db.session.query(IncidentUpdate).delete()
+db.session.query(IncidentUpdate).delete()
 db.session.query(Unit).delete()
 db.session.query(Message).delete()
 db.session.query(Note).delete()
@@ -205,5 +205,11 @@ roles = ["End user", "Service Desk", "Major Incident Manager"]
 for i in range(0, len(accounts)):
     db.session.add(Account(username=accounts[i], password='098f6bcd4621d373cade4e832627b4f6', firstName=accounts[i], lastName=accounts[i]))
     db.session.add(DepartmentMember(username=accounts[i], departmentID=departments[i], role=roles[i]))
+
+db.session.add(Incident(incidentID = 101, raisedID = 'directory', affectedID = 'user', investigatingDepartmentID = 1,
+    description = 'Something broke', timeRaised = datetime.datetime(2020,6,2,10,0,0), priority = 'P1', severity = 'S1',
+    impact = 'impact', status = 'completed', timeCompleted = datetime.datetime(2020, 6, 6, 16,30,00)))
+db.session.add(IncidentUpdate(updateID=100, incidentID=1, technicianID="mud", description="Foo bar", updateType="workaround", timeSpent=60, date=datetime.datetime(2020, 6, 6, 12,30,00)))
+db.session.add(IncidentUpdate(updateID=101, incidentID=1, technicianID="mud", description="Foo bar", updateType="fix", timeSpent=90, date=datetime.datetime(2020, 6, 6, 16,30,00)))
 
 db.session.commit()
