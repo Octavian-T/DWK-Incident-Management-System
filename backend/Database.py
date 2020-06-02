@@ -36,6 +36,7 @@ class IncidentUpdate(db.Model):
     # severity = db.Column(db.String(2), nullable=False)
     # impact = db.Column(db.String(2), nullable=False)
     description = db.Column(db.String(250))
+    updateType = db.Column(db.String(32))
     timeSpent = db.Column(db.Integer(), nullable=False)
     date = db.Column(db.DateTime())
 

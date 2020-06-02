@@ -135,6 +135,7 @@ def get_incident_updates(id):
                 'incidentID': int(update.incidentID),
                 'technicianID': update.technicianID,
                 'description': update.description,
+                'updateType': update.updateType,
                 'timeSpent': int(update.timeSpent),
                 'date': str(update.date)
             })
