@@ -172,6 +172,32 @@ export function showNotes(noteID){
     .catch(error => console.log(error))
 }
 
+export function showProgressUpdates(incidentID){
+    console.log(`Showing updates for: ${incidentID}`)
+    axios.get(`http://127.0.0.1/api/incident/${incidentID}/updates`, {
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(res => {
+        const updates = res.data.data;
+        if(updates.length === 0){
+            alert("No updates for this incident");
+        }
+        else {
+            var updatesLog = "";
+
+            for(var i = 0; i < updates.length; i++){
+                updatesLog += `[${updates[i].technicianID}]: ${updates[i].updateType} - ${updates[i].description} (${updates[i].timeSpent} on ${updates[i].date})\n`;
+            }
+
+            alert(updatesLog);
+        }
+    })
+    .catch(error => console.log(error))
+}
+
 export function postNewNote(incidentID, author, note){
     axios.post('http://127.0.0.1/api/note/new',  {
         'incidentID': incidentID,
@@ -194,4 +220,4 @@ export function postNewNote(incidentID, author, note){
     })
 }
 
-export default { getUsersIncidents, getMajorIncidents, postIncidentRequestPriority, approveIncidentPriorityRequest, getDepartments, getIncidentPriorityRequests, updateIncident, showNotes, postNewNote }
+export default { getUsersIncidents, getMajorIncidents, showProgressUpdates, postIncidentRequestPriority, approveIncidentPriorityRequest, getDepartments, getIncidentPriorityRequests, updateIncident, showNotes, postNewNote }

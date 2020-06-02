@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
+import { showProgressUpdates, showNotes } from '../IncidentFunctions'
+
 import '../../css/ViewIncident.css';
 
 function TechnicianViewIncident(props) {
@@ -45,8 +47,9 @@ function TechnicianViewIncident(props) {
     }, [props.state]);
 
     //Set selected ID on row click
-    function onIncidentRowClick(noteID){
+    function onIncidentRowClick(noteID, clickOnShowNotes){
         props.setSelectedIncidentID(noteID);
+        if (clickOnShowNotes) showNotes(noteID);
     }
 
     return (
@@ -63,6 +66,7 @@ function TechnicianViewIncident(props) {
                         <th>Description</th>
                         <th>Team</th>
                         <th>Notes</th>
+                        <th>Updates</th>
                         <th>Priority</th>
                         <th>Severity</th>
                         <th>Impact</th>
@@ -77,6 +81,7 @@ function TechnicianViewIncident(props) {
                                 <td>{incident.description}</td>
                                 <td>{incident.investigatingDepartmentID}</td>
                                 <td><p className="clickable" onClick={() => onIncidentRowClick(incident.incidentID, true)}>Notes</p></td>
+                                <td><p className="clickable" onClick={() => showProgressUpdates(incident.incidentID)}>Updates</p></td>
                                 <td>{incident.priority}</td>
                                 <td>{incident.severity}</td>
                                 <td>{incident.impact}</td>

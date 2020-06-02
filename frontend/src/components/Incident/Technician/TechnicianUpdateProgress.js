@@ -4,22 +4,34 @@ import axios from 'axios';
 
 function TechnicianUpdateProgress(props){
 
-    const newNote = useRef(null)
+    const progressText = useRef(null)
+    const minutes = useRef(null);
+    const status = useRef(null);
 
-    function postNewNote(event){
+    function postNewProgressUpdate(event){
         if(props.selectedIncidentID === undefined){
             alert("Please select an incident to add a note to");
             event.preventDefault();
         }
-        else if (newNote.current.value.length > 250 || newNote.current.value.length < 1){
+        else if (progressText.current.value.length > 250 || progressText.current.value.length < 1){
             alert("Note must be between 1-250 characters");
             event.preventDefault();
         }
         else {
-            axios.post('http://127.0.0.1/api/note/new',  {
+            console.log({
                 'incidentID': props.selectedIncidentID,
-                'author': sessionStorage.getItem('username'),
-                'text': newNote.current.value
+                'technicianID': sessionStorage.getItem('username'),
+                'description': progressText.current.value,
+                'updateType': status.current.value,
+                'timeSpent': minutes.current.value
+            });
+            console.log(`http://127.0.0.1/api/incident/${props.selectedIncidentID}/updates`);
+            axios.post(`http://127.0.0.1/api/incident/${props.selectedIncidentID}/updates`,  {
+                'incidentID': props.selectedIncidentID,
+                'technicianID': sessionStorage.getItem('username'),
+                'description': progressText.current.value,
+                'updateType': status.current.value,
+                'timeSpent': minutes.current.value
             }, {
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
@@ -43,14 +55,14 @@ function TechnicianUpdateProgress(props){
           <div className="background-container">
             <h2>Update Progress</h2>
             <p>Current selected Incident ID: {props.selectedIncidentID || "none"}</p>
-            <form onSubmit={postNewNote}>
-                <textarea placeholder="Max 250 characters" ref={newNote}/>
-                <select>
-                    <option>Update</option>
-                    <option>Work Around</option>
-                    <option>Fixed</option>
+            <form onSubmit={postNewProgressUpdate}>
+                <textarea placeholder="Max 250 characters" ref={progressText}/>
+                <select ref={status}>
+                    <option value="update">Update</option>
+                    <option value="workaround">Work Around</option>
+                    <option value="Completed">Completed</option>
                 </select>
-                <input type="text" placeholder="Time taken (min)"></input>
+                <input type="text" placeholder="Time taken (min)" ref={minutes}></input>
                 <button>Submit</button>
             </form>
           </div>

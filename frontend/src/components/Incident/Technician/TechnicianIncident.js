@@ -26,7 +26,7 @@ function TechnicianIncident() {
         <div className="col-md-8">
           <TechnicianViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID} state={state}/>
           { state === 'update' && <TechnicianAddNote selectedIncidentID={selectedIncidentID}/>}
-          { state === 'update' && <TechnicianUpdateProgress />}
+          { state === 'update' && <TechnicianUpdateProgress selectedIncidentID={selectedIncidentID}/>}
         </div>
       </div>
     </>
