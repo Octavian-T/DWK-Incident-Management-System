@@ -191,9 +191,11 @@ def technicians_totals(id):
             "total_incidents": 0,
             "total_time_spent": 0
         }
-        for incident in query:
-            technician["total_incidents"] += 1
-            technician["total_time_spent"] += incident[1]
+        incidents = []
+        for incidentUpdate in query:
+            technician["total_incidents"] += 1 if incidentUpdate[0] in incidents else 0
+            technician["total_time_spent"] += incidentUpdate[1]
+            incidents.append(incidentUpdate[0])
         technicians["data"].append(technician)
     return create_response(technicians)
 
