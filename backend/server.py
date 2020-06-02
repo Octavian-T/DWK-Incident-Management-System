@@ -93,8 +93,7 @@ def get_incident(id):
             priority = request.get_json()['priority'] if 'priority' in request.get_json() else '',
             severity = request.get_json()['severity'] if 'severity' in request.get_json() else '',
             impact = request.get_json()['impact'] if 'impact' in request.get_json() else '',
-            status = request.get_json()['status'] if 'priority' in request.get_json() else '',
-            timeCompleted = datetime.datetime.now() if 'closeIncident' in request.get_json() else None)
+            status = request.get_json()['status'] if 'priority' in request.get_json() else '')
         db.session.add(newIncident)
         db.session.commit()
         
@@ -116,33 +115,60 @@ def get_incident(id):
         if 'investigatingDepartmentID' in data:
             sql_string = sql_string + 'investigatingDepartmentID = {}, '.format(data['investigatingDepartmentID'])
         if 'closeIncident' in data:
-            sql_string = sql_string + 'timeCompleted = "{}" '.format(str(datetime.datetime.now()))
+            sql_string = sql_string + 'timeCompleted = "{}", '.format(str(datetime.datetime.now()))
+        if 'investigatingTechnicianID' in data:
+            sql_string = sql_string + 'investigatingTechnicianID = "{}", '.format(data['investigatingTechnicianID'])
         sql_string = sql_string[1:-1]
         db.engine.execute('UPDATE Incident Set {} WHERE incidentID = "{}";'.format(sql_string[1:-1],id))
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
-@app.route('/api/incident/<id>/updates', methods = ['GET'])
+@app.route('/api/incident/<id>/updates', methods = ['GET', 'POST'])
 def get_incident_updates(id):
-    updates = IncidentUpdate.query.filter_by(incidentID=id).all()
+    if request.method == 'GET':
+        updates = IncidentUpdate.query.filter_by(incidentID=id).all()
 
-    if updates is not None:
+        if updates is not None:
+            
+            all_updates = { 'data': [] }
+            for update in updates:
+                all_updates['data'].append({
+                    'updateID': int(update.updateID),
+                    'incidentID': int(update.incidentID),
+                    'technicianID': update.technicianID,
+                    'description': update.description,
+                    'updateType': update.updateType,
+                    'timeSpent': int(update.timeSpent),
+                    'date': str(update.date)
+                })
+            return all_updates
+        else:
+            return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
+    elif request.method == 'POST':
+        print(request.get_json())
+        incidentUpdate = IncidentUpdate(
+            incidentID=request.get_json()['incidentID'],
+            technicianID=request.get_json()['technicianID'],
+            description=request.get_json()['description'],
+            updateType=request.get_json()['updateType'],
+            timeSpent=request.get_json()['timeSpent'],
+            date=datetime.datetime.now()
+        )
+        db.session.add(incidentUpdate)
+
+        #If progress makes it complete, marked status as complete in incident table
+        if request.get_json()['updateType'] == 'Completed':
+            db.engine.execute('UPDATE Incident SET status = "completed" WHERE incidentID = %s;' % request.get_json()['incidentID'])
+
+        db.session.commit()
+
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
         
-        all_updates = { 'data': [] }
-        for update in updates:
-            all_updates['data'].append({
-                'updateID': int(update.updateID),
-                'incidentID': int(update.incidentID),
-                'technicianID': update.technicianID,
-                'description': update.description,
-                'updateType': update.updateType,
-                'timeSpent': int(update.timeSpent),
-                'date': str(update.date)
-            })
-        return all_updates
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+
 
 @app.route('/api/incident/<id>/notes', methods=['GET'])
 def get_incident_notes(id):

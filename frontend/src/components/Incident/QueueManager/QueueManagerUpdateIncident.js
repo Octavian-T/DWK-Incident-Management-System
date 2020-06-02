@@ -69,7 +69,6 @@ function QueueManagerUpdateIncident(props) {
             priority.current.value = response.data.priority;
             severity.current.value = response.data.severity;
             departmentID.current.value = response.data.investigatingDepartmentID;
-            //document.getElementById('investigatingUnitID').value=props.investigatingUnitID;
         })
         .catch(function(error){
             console.log(error);

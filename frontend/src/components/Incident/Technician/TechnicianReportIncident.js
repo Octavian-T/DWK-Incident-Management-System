@@ -1,4 +1,4 @@
-import React, { useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 
 import axios from 'axios';
 
@@ -16,6 +16,7 @@ function TechnicianReportIncident() {
             'affectedID':sessionStorage.getItem('username'),
             'description': description.current.value,
             'date':date + ' ' + time,
+            'investigatingDepartmentID':0
         }, {
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),

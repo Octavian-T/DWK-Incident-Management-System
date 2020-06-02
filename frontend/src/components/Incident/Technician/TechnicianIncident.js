@@ -4,6 +4,7 @@ import TechnicianReportIncident from './TechnicianReportIncident';
 import TechnicianUpdateIncident from './TechnicianUpdateIncident';
 import TechnicianViewIncident from './TechnicianViewIncident';
 import TechnicianAddNote from './TechnicianAddNote';
+import TechnicianUpdateProgress from './TechnicianUpdateProgress';
 
 function TechnicianIncident() {
 
@@ -19,12 +20,13 @@ function TechnicianIncident() {
       <div className="row">
         <div className="col-md-4">
           { state === 'report' && <TechnicianReportIncident />}
-          { state === 'update' && <TechnicianUpdateIncident />}
+          { state === 'update' && <TechnicianUpdateIncident selectedIncidentID={selectedIncidentID}/>}
         </div>
         
         <div className="col-md-8">
-          <TechnicianViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID}/>
-          <TechnicianAddNote selectedIncidentID={selectedIncidentID}/>
+          <TechnicianViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID} state={state}/>
+          { state === 'update' && <TechnicianAddNote selectedIncidentID={selectedIncidentID}/>}
+          { state === 'update' && <TechnicianUpdateProgress selectedIncidentID={selectedIncidentID}/>}
         </div>
       </div>
     </>

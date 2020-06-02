@@ -1,12 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
+import { getDepartments } from '../IncidentFunctions';
 
 import axios from 'axios';
 
 import '../../css/ReportIncident.css'
 
-function TechnicianUpdateIncident(props) {
+function ResolverUpdateIncident(props) {
 
-    const [technicians, setTechnicians] = useState({'data':[]});
+    const [departments, setDepartments] = useState({'data':[]});
 
     const incidentID = useRef(0);
     const date = useRef('Date');
@@ -14,16 +15,17 @@ function TechnicianUpdateIncident(props) {
     const priority = useRef('P1');
     const severity = useRef('S1');
     const impact = useRef('IMP1');
-    const technicianID = useRef(0);
+    const departmentID = useRef(0);
+    //const investigatingUnitID = useRef('1');
 
-    function updateTechnicianIncident(event) {
+    function updateResolverIncident(event) {
         event.preventDefault();
-        console.log(technicianID.current.value);
         axios.put('http://127.0.0.1/api/incident/'+props.selectedIncidentID, {
-            'investigatingTechnicianID':technicianID.current.value,
+            //'investigatingUnitID':investigatingUnitID.current.value,
+            'investigatingDepartmentID':parseInt(departmentID.current.value),
             'priority':priority.current.value,
             'severity':severity.current.value,
-            'impact':impact.current.value,
+            'impact':impact.current.value
         }, {
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
@@ -43,21 +45,12 @@ function TechnicianUpdateIncident(props) {
         })
     }
     useEffect(()=>{
-        axios.get('http://127.0.0.1/api/department/'+sessionStorage.getItem('departmentID')+'/members', {
-                    headers: {
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                        'Access-Control-Allow-Origin': '*'
-                    }
-                })
-                .then(resp => {
-                    setTechnicians(resp.data);
-                })
-                .catch(error => {
-                    if(error.response.status === 422){
-                        alert("Error " + error.response.status + " - Not logged in");
-                        window.location.replace("/");
-                    }
-                });
+        const fetchData = async () => {
+            await getDepartments().then(resp => {
+                setDepartments(resp);
+            })
+        }
+        fetchData();
     }, [])
     useEffect( ()=>{
         axios.get("http://127.0.0.1/api/incident/"+props.selectedIncidentID, {
@@ -75,7 +68,7 @@ function TechnicianUpdateIncident(props) {
             impact.current.value = response.data.impact;
             priority.current.value = response.data.priority;
             severity.current.value = response.data.severity;
-            technicianID.current.value = response.data.investigatingTechnicianID;
+            departmentID.current.value = response.data.investigatingDepartmentID;
         })
         .catch(function(error){
             console.log(error);
@@ -99,11 +92,11 @@ function TechnicianUpdateIncident(props) {
                 <input type="disabled" ref={incidentID}></input>
                 <br />
 
-                <label>Technician ID</label>
+                <label>Department</label>
                 <br />
-                <select ref={technicianID}> 
-                        {technicians.data.map(technician =>(
-                            <option value={technician.username}>{technician.firstName}</option>
+                <select ref={departmentID}> 
+                        {departments.data.map(department =>(
+                            <option value={department.departmentID}>{department.name}</option>
                         ))}
                 </select>
                 <br />
@@ -140,11 +133,11 @@ function TechnicianUpdateIncident(props) {
                     </select>
                 </div>
                 <br />
-                <button onClick={updateTechnicianIncident}>Submit</button>
+                <button onClick={updateResolverIncident}>Submit</button>
             </div>
           </form>
         </>
     );
 }
 
-export default TechnicianUpdateIncident;
+export default ResolverUpdateIncident;
