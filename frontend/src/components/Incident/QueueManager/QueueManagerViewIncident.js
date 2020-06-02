@@ -9,22 +9,40 @@ function QueueManagerViewIncident(props) {
     const [incidents, setIncidents] = useState({ "data": [] });
 
     useEffect(() => {
-        axios.get('http://127.0.0.1/api/incident/all', {
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
-                'Access-Control-Allow-Origin': '*'
+            if (props.state === 'report'){
+                axios.get('http://127.0.0.1/api/incident/all', {
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+                .then(res => {
+                    setIncidents(res.data);
+                })
+                .catch(error => {
+                    if(error.response.status === 422){
+                        alert("Error " + error.response.status + " - Not logged in");
+                        window.location.replace("/");
+                    }
+                });
+            }else if (props.state === 'update') {
+                axios.get('http://127.0.0.1/api/department/'+sessionStorage.getItem('departmentID')+'/incidents', {
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+                .then(res => {
+                    setIncidents(res.data);
+                })
+                .catch(error => {
+                    if(error.response.status === 422){
+                        alert("Error " + error.response.status + " - Not logged in");
+                        window.location.replace("/");
+                    }
+                });
             }
-        })
-        .then(res => {
-            setIncidents(res.data);
-        })
-        .catch(error => {
-            if(error.response.status === 422){
-                alert("Error " + error.response.status + " - Not logged in");
-                window.location.replace("/");
-            }
-        })
-    }, []);
+    }, [props.state]);
 
     //Set selected ID on row click
     function onIncidentRowClick(noteID){
