@@ -15,6 +15,12 @@ import Database
 
 
 reports = Blueprint('reports', __name__)
+# SLA Targets stored in seconds
+SLA_targets = {
+    "P1": [7200, 86400],
+    "P2": [86400, 259200],
+    "P3": [259200, 604800]
+}
 
 
 # region Testing
@@ -123,7 +129,7 @@ def departments_totals(id):
     if id == "all":
         query = Database.Department.query.with_entities(
             Database.Department.departmentID).all()
-        department_list = [id for id, in query]
+        department_list = [departmentID for departmentID, in query]
     else:
         department_list = [id]
 
@@ -171,7 +177,7 @@ def technicians_totals(id):
     if id == "all":
         query = Database.DepartmentMember.query.filter(Database.DepartmentMember.role.in_(incident_team)).with_entities(
             Database.DepartmentMember.username).all()
-        technicians_list = [id for id, in query]
+        technicians_list = [username for username, in query]
     else:
         technicians_list = [id]
 
@@ -190,6 +196,43 @@ def technicians_totals(id):
             technician["total_time_spent"] += incident[1]
         technicians["data"].append(technician)
     return create_response(technicians)
+
+
+@reports.route("/api/reports/sla/status/<id>", methods=["GET"])
+def get_SLA_status(id):
+    incidents = {"data": []}
+    from_date = request.args.get('from', default="2000-01-01")
+    to_date = request.args.get('to', default="2999-12-31")
+
+    if id == "all":
+        query = Database.Incident.query.filter(
+            Database.Incident.timeRaised >= from_date,
+            Database.Incident.timeRaised <= to_date).with_entities(
+            Database.Incident.incidentID, Database.Incident.priority,
+            Database.Incident.status, Database.Incident.timeRaised).all()
+        incidents_list = query
+    else:
+        query = Database.Incident.query.filter(
+            Database.Incident.incidentID == id).with_entities(
+            Database.Incident.incidentID, Database.Incident.priority,
+            Database.Incident.status, Database.Incident.timeRaised).all()
+        incidents_list = query
+
+    for username in incidents_list:
+        query = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.technicianID == username,
+                                               Database.IncidentUpdate.date >= from_date,
+                                               Database.IncidentUpdate.date <= to_date).with_entities(
+            Database.IncidentUpdate.technicianID, Database.IncidentUpdate.timeSpent).all()
+        technician = {
+            "technicianID": username,
+            "total_incidents": 0,
+            "total_time_spent": 0
+        }
+        for incident in query:
+            technician["total_incidents"] += 1
+            technician["total_time_spent"] += incident[1]
+        incidents["data"].append(technician)
+    return create_response(incidents)
 
 
 @reports.route("/api/reports/incidents/single/<id>", methods=["GET"])
