@@ -235,9 +235,9 @@ def get_SLA_status(id):
             Database.IncidentUpdate.updateType).first()
         
         status = status[0] if status is not None else incident[2]
+        status = incident[2] if status == "fix" else status
         incident = {
         "incidentID": incident[0],
-        "priority": incident[1],
         "status": status,
         "target_resolution": str(calc_sla_target(incident[1], status, incident[3]))
         }
@@ -257,7 +257,7 @@ def incidents_single(id):
 def calc_sla_target(priority, status, timeRaised : datetime):
     target = 0
     if status == "workaround":
-        target = 0
+        target = 1
     
     sla_target = timeRaised + datetime.timedelta(0, SLA_targets[priority][target])
     return sla_target
