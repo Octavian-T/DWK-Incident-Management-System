@@ -1,35 +1,27 @@
 import React, { useState } from 'react';
 
 import ResolverReportIncident from './ResolverReportIncident';
+import ResolverUpdateIncident from './ResolverUpdateIncident';
 import ResolverViewIncident from './ResolverViewIncident';
 
 function ResolverIncident() {
 
-  const [selectedIncidentID, setSelectedIncidentID] = useState();
+  const [selectedIncidentID, setSelectedIncidentID] = useState(1);
+  const [state, setState] = useState('report');
 
   return (
     <>
       <div className="row">
+            <button onClick={() => setState('report')}>New</button>
+            <button onClick={() => setState('update')}>Update</button>
+      </div>
+      <div className="row">
         <div className="col-md-4">
-          <ResolverReportIncident date={date} selectedIncidentID={selectedIncidentID} priority={priority} setPriority={setPriority}  impact={impact} setImpact={setImpact}  severity={severity} setSeverity={setSeverity}  investigatingDepartmentID={investigatingDepartmentID} investigatingUnitID={investigatingUnitID}/>
+          { state === 'update' && <ResolverUpdateIncident selectedIncidentID={selectedIncidentID} />}
+          { state === 'report' && <ResolverReportIncident /> }
         </div>
         <div className="col-md-8">
-          <ResolverViewIncident 
-            selectedIncidentID={selectedIncidentID} 
-            setSelectedIncidentID={setSelectedIncidentID} 
-            date={date} 
-            setDate={setDate} 
-            priority={priority} 
-            setPriority={setPriority} 
-            impact={impact} 
-            setImpact={setImpact} 
-            severity={severity} 
-            setSeverity={setSeverity} 
-            investigatingDepartmentID={investigatingDepartmentID} 
-            setInvestigatingDepartmentID={setInvestigatingDepartmentID} 
-            investigatingUnitID={investigatingUnitID} 
-            setInvestigatingUnitID={setInvestigatingUnitID}
-          />
+          <ResolverViewIncident setSelectedIncidentID={setSelectedIncidentID} state={state}/>
         </div>
       </div>
     </>

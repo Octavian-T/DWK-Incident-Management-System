@@ -54,24 +54,6 @@ function QueueManagerViewIncident(props) {
         <h2 className="subheading">View Incident</h2>
 
         <div className="background-container">
-            <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>
-
-            <button>Submit</button>
-            <br />
-
-            <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>
-
-            <button>Submit</button>
-            <br />
-
             <table className="incident-table">
                 <thead>
                     <tr>
