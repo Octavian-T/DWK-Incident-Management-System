@@ -202,6 +202,14 @@ def technicians_totals(id):
 
 @reports.route("/api/reports/sla/status/<id>", methods=["GET"])
 def get_SLA_status(id):
+    """This method returns the status and target SLA completion time
+
+    Arguments:
+        id -- incidentID, or 'all' to get all incidents status
+    Request Arguments:
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
+    """
     incidents = {"data": []}
     from_date = request.args.get('from', default="2000-01-01")
     to_date = request.args.get('to', default="2999-12-31")
@@ -220,20 +228,15 @@ def get_SLA_status(id):
             Database.Incident.status, Database.Incident.timeRaised).all()
         incidents_list = query
 
-    for username in incidents_list:
-        query = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.technicianID == username,
-                                               Database.IncidentUpdate.date >= from_date,
-                                               Database.IncidentUpdate.date <= to_date).with_entities(
-            Database.IncidentUpdate.technicianID, Database.IncidentUpdate.timeSpent).all()
-        technician = {
-            "technicianID": username,
-            "total_incidents": 0,
-            "total_time_spent": 0
+    for incident in incidents_list:
+        status = {
+        "incidentID": incident[0],
+        "priority": incident[1],
+        "status": incident[2],
+        "target_resolution": str(calc_sla_target(incident[1], incident[2], incident[3]))
         }
-        for incident in query:
-            technician["total_incidents"] += 1
-            technician["total_time_spent"] += incident[1]
-        incidents["data"].append(technician)
+        incidents["data"].append(status)
+        
     return create_response(incidents)
 
 
@@ -243,6 +246,17 @@ def incidents_single(id):
 
 # endregion
 # region utility methods
+
+
+def calc_sla_target(priority, status, timeRaised : datetime):
+    target = 0
+    if status == "workaround":
+        target = 0
+    print(timeRaised)
+    print(datetime.timedelta(0, SLA_targets[priority][target]))
+    sla_target = timeRaised + datetime.timedelta(0, SLA_targets[priority][target])
+    print(sla_target)
+    return sla_target
 
 
 def calc_ttr(timeRaised, timeCompleted):
