@@ -19,7 +19,7 @@ class Incident(db.Model):
     incidentID = db.Column(db.Integer(), primary_key=True, unique=True, nullable=False)
     raisedID = db.Column(db.String(32), db.ForeignKey('account.username'))
     affectedID = db.Column(db.String(32), db.ForeignKey('account.username'))
-    investigatingDepartmentID = db.Column(db.String(32), db.ForeignKey('department.departmentID'))
+    investigatingDepartmentID = db.Column(db.Integer(), db.ForeignKey('department.departmentID'))
     investigatingTechnicianID = db.Column(db.String(32), db.ForeignKey('account.username'))
     description = db.Column(db.String(250))
     timeRaised = db.Column(db.DateTime())

@@ -38,7 +38,7 @@ def get_incident(id):
                     'incidentID':incident.incidentID,
                     'raisedID':incident.raisedID,
                     'affectedID':incident.affectedID,
-                    'investigatingDepartmentID': int(incident.investigatingDepartmentID),
+                    'investigatingDepartmentID': incident.investigatingDepartmentID,
                     'description':incident.description,
                     'timeRaised': str(incident.timeRaised),
                     'priority':incident.priority,
@@ -90,10 +90,10 @@ def get_incident(id):
             investigatingDepartmentID = request.get_json()['investigatingDepartmentID'] if 'investigatingDepartmentID' in request.get_json() else '',
             description = request.get_json()['description'],
             timeRaised = datetime.datetime.now(),
-            priority = request.get_json()['priority'] if 'priority' in request.get_json() else '',
-            severity = request.get_json()['severity'] if 'severity' in request.get_json() else '',
-            impact = request.get_json()['impact'] if 'impact' in request.get_json() else '',
-            status = request.get_json()['status'] if 'priority' in request.get_json() else '')
+            priority = request.get_json()['priority'] if 'priority' in request.get_json() else 'P1',
+            severity = request.get_json()['severity'] if 'severity' in request.get_json() else 'S1',
+            impact = request.get_json()['impact'] if 'impact' in request.get_json() else 'IMP1',
+            status = request.get_json()['status'] if 'priority' in request.get_json() else 'submitted')
         db.session.add(newIncident)
         db.session.commit()
         
@@ -201,7 +201,7 @@ def get_incident_major():
                 'incidentID':int(incident.incidentID),
                 'raisedID':incident.raisedID,
                 'affectedID':incident.affectedID,
-                'investigatingDepartmentID':int(incident.investigatingDepartmentID),
+                'investigatingDepartmentID':incident.investigatingDepartmentID,
                 'description':incident.description,
                 'timeRaised':str(incident.timeRaised),
                 'priority':incident.priority,
@@ -320,7 +320,7 @@ def get_account_incidents(id):
                 'incidentID':int(incident.incidentID),
                 'raisedID':incident.raisedID,
                 'affectedID':incident.affectedID,
-                'investigatingDepartmentID':int(incident.investigatingDepartmentID),
+                'investigatingDepartmentID':incident.investigatingDepartmentID,
                 'description':incident.description,
                 'timeRaised':str(incident.timeRaised),
                 'priority':incident.priority,
@@ -385,7 +385,7 @@ def get_department_incidents(id):
                 'incidentID':int(incident.incidentID),
                 'raisedID':incident.raisedID,
                 'affectedID':incident.affectedID,
-                'investigatingDepartmentID':int(incident.investigatingDepartmentID),
+                'investigatingDepartmentID':incident.investigatingDepartmentID,
                 'description':incident.description,
                 'timeRaised':str(incident.timeRaised),
                 'priority':incident.priority,
