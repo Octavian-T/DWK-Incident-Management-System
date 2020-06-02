@@ -229,13 +229,19 @@ def get_SLA_status(id):
         incidents_list = query
 
     for incident in incidents_list:
-        status = {
+        status = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.incidentID == incident[0],
+            Database.IncidentUpdate.updateType.in_(["workaround", "fix"])).order_by(
+            Database.IncidentUpdate.date.desc()).with_entities(
+            Database.IncidentUpdate.updateType).first()
+        
+        status = status[0] if status is not None else incident[2]
+        incident = {
         "incidentID": incident[0],
         "priority": incident[1],
-        "status": incident[2],
-        "target_resolution": str(calc_sla_target(incident[1], incident[2], incident[3]))
+        "status": status,
+        "target_resolution": str(calc_sla_target(incident[1], status, incident[3]))
         }
-        incidents["data"].append(status)
+        incidents["data"].append(incident)
         
     return create_response(incidents)
 
@@ -252,10 +258,8 @@ def calc_sla_target(priority, status, timeRaised : datetime):
     target = 0
     if status == "workaround":
         target = 0
-    print(timeRaised)
-    print(datetime.timedelta(0, SLA_targets[priority][target]))
+    
     sla_target = timeRaised + datetime.timedelta(0, SLA_targets[priority][target])
-    print(sla_target)
     return sla_target
 
 
