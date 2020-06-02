@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import QueueManagerReportIncident from './QueueManagerUpdateIncident';
+import QueueManagerUpdateIncident from './QueueManagerUpdateIncident';
 import QueueManagerViewIncident from './QueueManagerViewIncident';
 
 function QueueManagerIncident() {
