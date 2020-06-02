@@ -93,8 +93,7 @@ def get_incident(id):
             priority = request.get_json()['priority'] if 'priority' in request.get_json() else '',
             severity = request.get_json()['severity'] if 'severity' in request.get_json() else '',
             impact = request.get_json()['impact'] if 'impact' in request.get_json() else '',
-            status = request.get_json()['status'] if 'priority' in request.get_json() else '',
-            timeCompleted = datetime.datetime.now() if 'closeIncident' in request.get_json() else None)
+            status = request.get_json()['status'] if 'priority' in request.get_json() else '')
         db.session.add(newIncident)
         db.session.commit()
         
@@ -116,7 +115,9 @@ def get_incident(id):
         if 'investigatingDepartmentID' in data:
             sql_string = sql_string + 'investigatingDepartmentID = {}, '.format(data['investigatingDepartmentID'])
         if 'closeIncident' in data:
-            sql_string = sql_string + 'timeCompleted = "{}" '.format(str(datetime.datetime.now()))
+            sql_string = sql_string + 'timeCompleted = "{}", '.format(str(datetime.datetime.now()))
+        if 'investigatingTechnicianID' in data:
+            sql_string = sql_string + 'investigatingTechnicianID = "{}", '.format(data['investigatingTechnicianID'])
         sql_string = sql_string[1:-1]
         db.engine.execute('UPDATE Incident Set {} WHERE incidentID = "{}";'.format(sql_string[1:-1],id))
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}

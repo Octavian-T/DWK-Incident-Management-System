@@ -19,12 +19,12 @@ function TechnicianIncident() {
       <div className="row">
         <div className="col-md-4">
           { state === 'report' && <TechnicianReportIncident />}
-          { state === 'update' && <TechnicianUpdateIncident />}
+          { state === 'update' && <TechnicianUpdateIncident selectedIncidentID={selectedIncidentID}/>}
         </div>
         
         <div className="col-md-8">
-          <TechnicianViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID}/>
-          <TechnicianAddNote selectedIncidentID={selectedIncidentID}/>
+          <TechnicianViewIncident selectedIncidentID={selectedIncidentID} setSelectedIncidentID={setSelectedIncidentID} state={state}/>
+          { state === 'update' && <TechnicianAddNote selectedIncidentID={selectedIncidentID}/>}
         </div>
       </div>
     </>
