@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import '../../css/ReportIncident.css'
 
-function QueueManagerReportIncident(props) {
+function QueueManagerUpdateIncident(props) {
 
     const [departments, setDepartments] = useState({'data':[]});
 
@@ -141,4 +141,4 @@ function QueueManagerReportIncident(props) {
     );
 }
 
-export default QueueManagerReportIncident;
+export default QueueManagerUpdateIncident;
