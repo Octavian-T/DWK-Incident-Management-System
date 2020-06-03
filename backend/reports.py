@@ -229,17 +229,19 @@ def get_SLA_status(id):
         incidents_list = query
 
     for incident in incidents_list:
-        status = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.incidentID == incident[0],
-            Database.IncidentUpdate.updateType.in_(["workaround", "fix"])).order_by(
+        workaround = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.incidentID == incident[0],
+            Database.IncidentUpdate.updateType.in_(["workaround"])).order_by(
             Database.IncidentUpdate.date.desc()).with_entities(
             Database.IncidentUpdate.updateType).first()
         
-        status = status[0] if status is not None else incident[2]
-        status = incident[2] if status == "fix" else status
+        workaround = workaround is not None
+        print(workaround)
+        status = incident[2]
+        target = calc_sla_target(incident[1], workaround, incident[3])
         incident = {
         "incidentID": incident[0],
         "status": status,
-        "target_resolution": str(calc_sla_target(incident[1], status, incident[3]))
+        "target_resolution": str(target)
         }
         incidents["data"].append(incident)
         
@@ -254,9 +256,9 @@ def incidents_single(id):
 # region utility methods
 
 
-def calc_sla_target(priority, status, timeRaised : datetime):
+def calc_sla_target(priority, workaround, timeRaised : datetime):
     target = 0
-    if status == "workaround":
+    if workaround == True:
         target = 1
     
     sla_target = timeRaised + datetime.timedelta(0, SLA_targets[priority][target])
