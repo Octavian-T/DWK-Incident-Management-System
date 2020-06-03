@@ -25,6 +25,7 @@ function Login() {
         sessionStorage.setItem('last_name', res.data.lastName);
         sessionStorage.setItem('departmentID', res.data.departmentID);
         sessionStorage.setItem('department', res.data.department);
+        sessionStorage.setItem('role', res.data.role);
 
         //Go to home page
         window.location.replace("/")

@@ -14,16 +14,17 @@ function TechnicianUpdateIncident(props) {
     const priority = useRef('P1');
     const severity = useRef('S1');
     const impact = useRef('IMP1');
-    const technicianID = useRef(0);
+    const closeIncident = useRef('');
+    const [technicianID, setTechnicianID] = useState(0);
 
     function updateTechnicianIncident(event) {
         event.preventDefault();
-        console.log(technicianID.current.value);
         axios.put('http://127.0.0.1/api/incident/'+props.selectedIncidentID, {
-            'investigatingTechnicianID':technicianID.current.value,
+            'investigatingTechnicianID':technicianID,
             'priority':priority.current.value,
             'severity':severity.current.value,
             'impact':impact.current.value,
+            'closeIncident':closeIncident.current.value
         }, {
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
@@ -75,7 +76,7 @@ function TechnicianUpdateIncident(props) {
             impact.current.value = response.data.impact;
             priority.current.value = response.data.priority;
             severity.current.value = response.data.severity;
-            technicianID.current.value = response.data.investigatingTechnicianID;
+            setTechnicianID(response.data.investigatingTechnicianID);
         })
         .catch(function(error){
             console.log(error);
@@ -101,7 +102,7 @@ function TechnicianUpdateIncident(props) {
 
                 <label>Technician ID</label>
                 <br />
-                <select ref={technicianID}> 
+                <select value={technicianID} onChange={(event)=> setTechnicianID(event.target.value)}> 
                         {technicians.data.map(technician =>(
                             <option value={technician.username}>{technician.firstName}</option>
                         ))}
@@ -140,6 +141,12 @@ function TechnicianUpdateIncident(props) {
                     </select>
                 </div>
                 <br />
+                <div className="form-check form-check-inline">
+                  <label className="form-check-label">
+                    Close Incident
+                  </label>
+                  <input className="form-check-input" type="checkbox" ref={closeIncident}></input>
+                </div>
                 <button onClick={updateTechnicianIncident}>Submit</button>
             </div>
           </form>

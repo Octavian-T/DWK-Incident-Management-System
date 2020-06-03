@@ -64,7 +64,9 @@ def get_incident(id):
                     'severity':incident.severity,
                     'impact':incident.impact,
                     'status':incident.status,
-                    'timeComplete': str(incident.timeCompleted)
+                    'timeComplete': str(incident.timeCompleted),
+                    'investigatingTechnicianID':incident.investigatingTechnicianID
+
                 }
             else:
                 return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
@@ -87,11 +89,11 @@ def get_incident(id):
         newIncident = Incident(
             raisedID = request.get_json()['raisedID'],
             affectedID = request.get_json()['affectedID'] if 'affectedID' in request.get_json() else request.get_json()['raisedID'],
-            investigatingDepartmentID = request.get_json()['investigatingDepartmentID'] if 'investigatingDepartmentID' in request.get_json() else '',
+            investigatingDepartmentID = request.get_json()['investigatingDepartmentID'] if 'investigatingDepartmentID' in request.get_json() else '1',
             description = request.get_json()['description'],
             timeRaised = datetime.datetime.now(),
-            priority = request.get_json()['priority'] if 'priority' in request.get_json() else 'P1',
-            severity = request.get_json()['severity'] if 'severity' in request.get_json() else 'S1',
+            priority = request.get_json()['priority'] if 'priority' in request.get_json() else 'P3',
+            severity = request.get_json()['severity'] if 'severity' in request.get_json() else 'S3',
             impact = request.get_json()['impact'] if 'impact' in request.get_json() else 'IMP1',
             status = request.get_json()['status'] if 'priority' in request.get_json() else 'submitted')
         db.session.add(newIncident)
@@ -432,8 +434,15 @@ def login():
             departmentMember = DepartmentMember.query.filter_by(username = username).first()
             department = Department.query.filter_by(departmentID=departmentMember.departmentID).first()
             access_token = create_access_token(identity=username)
-
-            return jsonify({'access_token': access_token, 'username': account.username, 'firstName': account.firstName, 'lastName': account.lastName, 'departmentID': departmentMember.departmentID, 'department': department.name}), 200, {'ContentType':'application/json'}
+            print(departmentMember.role)
+            return jsonify({
+                'access_token': access_token, 
+                'username': account.username, 
+                'firstName': account.firstName, 
+                'lastName': account.lastName, 
+                'departmentID': departmentMember.departmentID, 
+                'department': department.name,
+                'role':departmentMember.role}), 200, {'ContentType':'application/json'}
 
         else: 
             return jsonify({'success': False, 'error': 'Incorrect username/password'}), 401, {'ContentType':'application/json'}

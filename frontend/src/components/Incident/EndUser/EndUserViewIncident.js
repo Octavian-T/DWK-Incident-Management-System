@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getUsersIncidents, showNotes } from '../IncidentFunctions';
 
+import { showProgressUpdates } from '../IncidentFunctions'
+
 import '../../css/ViewIncident.css';
 
 function EndUserViewIncident(props) {
@@ -40,13 +42,15 @@ function EndUserViewIncident(props) {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Location</th>
+                        {/* <th>Location</th> */}
                         <th>Description</th>
-                        <th>Team</th>
+                        <th>Assigned Team</th>
                         <th>Notes</th>
+                        <th>Updates</th>
                         <th>Priority</th>
                         <th>Severity</th>
                         <th>Impact</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,13 +58,15 @@ function EndUserViewIncident(props) {
                         incidents.data.map(incident => (
                             <tr key={incident.incidentID} onClick={() => onIncidentRowClick(incident.incidentID, false)}>
                                 <td>{incident.incidentID}</td>
-                                <td>Location</td>
+                                {/* <td>Location</td> */}
                                 <td>{incident.description}</td>
                                 <td>{incident.investigatingDepartmentID}</td>
                                 <td><p className="clickable" onClick={() => onIncidentRowClick(incident.incidentID, true)}>Notes</p></td>
+                                <td><p className="clickable" onClick={() => showProgressUpdates(incident.incidentID)}>Updates</p></td>
                                 <td>{incident.priority}</td>
                                 <td>{incident.severity}</td>
                                 <td>{incident.impact}</td>
+                                <td>{incident.status}</td>
                             </tr>
                         ))
                     }

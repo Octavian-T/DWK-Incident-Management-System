@@ -16,9 +16,7 @@ function NavBar() {
         <ul>
             <li>&nbsp;</li>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/messages">Messages</Link></li>
             <li><Link to="/incidents">Incidents</Link></li>
-            <li><Link to="/reports">Reports</Link></li>
             <li><Link to="/profile">Profile</Link></li>
 
             <div className="navbar-bottom">
