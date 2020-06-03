@@ -24,12 +24,16 @@ SLA_targets = {
 
 
 # region Testing
-@reports.route("/api/reports/")
-def default():
+@reports.route("/api/reports/test")
+def report_test():
     return send_file("reportTest.html")
 # endregion End Testing
 
 # region Routes
+
+@reports.route("/api/reports/")
+def reports_page():
+    return send_file("reports.html")
 
 
 @reports.route("/api/reports/incidents/totals", methods=["GET"])
