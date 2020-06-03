@@ -434,8 +434,15 @@ def login():
             departmentMember = DepartmentMember.query.filter_by(username = username).first()
             department = Department.query.filter_by(departmentID=departmentMember.departmentID).first()
             access_token = create_access_token(identity=username)
-
-            return jsonify({'access_token': access_token, 'username': account.username, 'firstName': account.firstName, 'lastName': account.lastName, 'departmentID': departmentMember.departmentID, 'department': department.name}), 200, {'ContentType':'application/json'}
+            print(departmentMember.role)
+            return jsonify({
+                'access_token': access_token, 
+                'username': account.username, 
+                'firstName': account.firstName, 
+                'lastName': account.lastName, 
+                'departmentID': departmentMember.departmentID, 
+                'department': department.name,
+                'role':departmentMember.role}), 200, {'ContentType':'application/json'}
 
         else: 
             return jsonify({'success': False, 'error': 'Incorrect username/password'}), 401, {'ContentType':'application/json'}

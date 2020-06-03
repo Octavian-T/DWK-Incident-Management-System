@@ -5,10 +5,10 @@ import { Switch, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
-import Incident from './components/Incident'
-import Message from './components/Message';
+import Incident from './components/Incident';
 import Error from './components/Error';
 import SignOut from './components/SignOut';
+import Profile from './components/Profile'
 
 import './components/css/Main.css';
 import './components/css/Header.css';
@@ -45,7 +45,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/signout" component={SignOut} />
           <Route path="/incidents" component={Incident} />
-          <Route path="/messages" component={Message} />
+          <Route path="/profile" component={Profile} />
           <Route component={Error} />
         </Switch>
       </div>

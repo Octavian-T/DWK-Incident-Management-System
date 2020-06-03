@@ -3,7 +3,12 @@ import React from 'react';
 function Home() {
   return (
     <>
-      <h2>Home</h2>
+      <br />
+      <h1>Welcome</h1>
+      <h3>...to DWK incident reporting system</h3>
+      <br />
+      <br />
+      <h5>Please use the 'Menu' to navigate</h5>
     </>
   );
 }
