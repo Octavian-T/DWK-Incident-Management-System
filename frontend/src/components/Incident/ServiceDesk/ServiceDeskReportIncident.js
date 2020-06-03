@@ -51,8 +51,8 @@ function ServiceDeskReportIncident() {
             'investigatingDepartmentID': departmentSelect.current.value || 1,
             'description': description.current.value,
             'priority': priority,
-            'severity': 'S1',
-            'impact': 'IMP3',
+            'severity': 'S3',
+            'impact': 'IMP1',
             'status': 'assigned'
         }, {
             headers: {
@@ -85,9 +85,9 @@ function ServiceDeskReportIncident() {
                 <input type="time" placeholder="Time" id="timeInput"></input>
                 <br />
 
-                <label>Unit</label>
+                {/* <label>Unit</label>
                 <input type="text" placeholder="Unit"></input>
-                <br />
+                <br /> */}
 
                 <label>Affected username:</label>
                 <input type="text" placeholder="Affected user:" ref={affectedID}></input>

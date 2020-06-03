@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getUsersIncidents, showNotes } from '../IncidentFunctions';
 import '../../css/ViewIncident.css';
 
+
+import { showProgressUpdates } from '../IncidentFunctions'
+
 function ServiceDeskViewIncident(props) {
 
     const [incidents, setIncidents] = useState({ 'data': [] });
@@ -46,10 +49,11 @@ function ServiceDeskViewIncident(props) {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Location</th>
+                        {/* <th>Location</th> */}
                         <th>Description</th>
                         <th>Team</th>
                         <th>Notes</th>
+                        <th>Updates</th>
                         <th>Priority</th>
                         <th>Severity</th>
                         <th>Impact</th>
@@ -61,10 +65,11 @@ function ServiceDeskViewIncident(props) {
                        incidents && incidents.data && incidents.data.map(incident => (
                             <tr key={incident.incidentID} onClick={() => onIncidentRowClick(incident.incidentID, false)}>
                                 <td>{incident.incidentID}</td>
-                                <td>Location</td>
+                                {/* <td>Location</td> */}
                                 <td>{incident.description}</td>
                                 <td>{incident.investigatingDepartmentID}</td>
                                 <td><p className="clickable" onClick={() => onIncidentRowClick(incident.incidentID, true)}>Notes</p></td>
+                                <td><p className="clickable" onClick={() => showProgressUpdates(incident.incidentID)}>Updates</p></td>
                                 <td>{incident.priority}</td>
                                 <td>{incident.severity}</td>
                                 <td>{incident.impact}</td>

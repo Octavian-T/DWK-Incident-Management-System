@@ -1,11 +1,16 @@
-import React, { useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 
 import axios from 'axios';
+
+import { getDepartments } from '../IncidentFunctions';
 
 import '../../css/ReportIncident.css'
 
 function EndUserReportIncident() {
     const description = useRef(null);
+    const departmentSelect = useRef(null);
+
+    const [departments, setDepartments] = useState({ "data": [] });
     // const affectedID = useRef(null);
     // const investigatingDepartmentID = useRef(null);
     // const timeRaised = useRef(null);
@@ -20,6 +25,12 @@ function EndUserReportIncident() {
         var date = new Date();
         var currentTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         document.getElementById('timeInput').value = currentTime;
+
+         //Get departments data
+         const fetchData = async () => {
+            await getDepartments().then(resp => setDepartments(resp));
+        };
+        fetchData();
     }, []);
 
     
@@ -29,11 +40,11 @@ function EndUserReportIncident() {
         axios.post('http://127.0.0.1/api/incident/new',  {
             'raisedID': sessionStorage.getItem('username'),
             'affectedID': sessionStorage.getItem('username'),
-            'investigatingDepartmentID': 1,
+            'investigatingDepartmentID': departmentSelect.current.value,
             'description': description.current.value,
-            'priority': 'P1',
-            'severity': 'S1',
-            'impact': 'IMP3',
+            'priority': 'P3',
+            'severity': 'S3',
+            'impact': 'IMP1',
             'status': 'assigned'
         }, {
             headers: {
@@ -83,12 +94,18 @@ function EndUserReportIncident() {
                 <input type="time" placeholder="Time" id="timeInput"></input>
                 <br />
 
-                <label>Unit</label>
+                {/* <label>Unit</label>
                 <input type="text" placeholder="Unit"></input>
-                <br />
+                <br /> */}
 
                 <label>Department</label>
-                <input type="text" placeholder="Department"></input>
+                    <select value={departments.departmentID} ref={departmentSelect}>
+                        {
+                            departments.data.map(department => (
+                                <option key={department.departmentID} value={department.departmentID}>{`${department.departmentID} - ${department.name}`}</option>
+                            ))
+                        }
+                    </select>
                 <br />
 
                 <label>Incident Description</label>
