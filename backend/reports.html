@@ -1,0 +1,79 @@
+<!-- Testing file-->
+<html>
+
+<head>
+    <script>
+        function exportCSV(url, sender) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    download_csv(request.response, sender);
+                }
+                else if (this.readyState == 4 && this.status >= 400){
+                    alert("Error: Cannot export CSV. Please see console.")
+                }
+            };
+            request.open("GET", url, true);
+            request.setRequestHeader("accept", "text/csv");
+            request.send();
+        };
+
+        function download_csv(response, sender) {
+            var csv = response;
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = sender.getAttribute("name") + '.csv';
+            hiddenElement.click();
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>Reports</td>
+                    <td>&nbsp;</td>
+                    <td>Download CSV</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total</td>
+                    <td>&nbsp;</td>
+                    <td><button name="total" onclick="exportCSV('/api/reports/incidents/totals', this)">Export</button></td>
+                </tr>
+                <tr>
+                    <td>TTR</td>
+                    <td>&nbsp;</td>
+                    <td><button name="ttr" onclick="exportCSV('/api/reports/incidents/ttr/all', this)">Export</button></td>
+                </tr>
+                <tr>
+                    <td>Department totals</td>
+                    <td>&nbsp;</td>
+                    <td><button name="dept_total" onclick="exportCSV('/api/reports/departments/totals/all', this)">Export</button></td>
+                </tr>
+                <tr>
+                    <td>Technician Totals</td>
+                    <td>&nbsp;</td>
+                    <td><button name="tech_total" onclick="exportCSV('/api/reports/technicians/totals/all', this)">Export</button></td>
+                </tr>
+                <tr>
+                    <td>SLA Status</td>
+                    <td>&nbsp;</td>
+                    <td><button name="sla_status" onclick="exportCSV('/api/reports/sla/status/all', this)">Export</button></td>
+                </tr>
+                <tr>
+                    <td>SLA Targets</td>
+                    <td>&nbsp;</td>
+                    <td><button name="sla_targets" onclick="exportCSV('/api/reports/sla/targets/all', this)">Export</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

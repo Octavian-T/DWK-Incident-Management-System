@@ -24,12 +24,16 @@ SLA_targets = {
 
 
 # region Testing
-@reports.route("/api/reports/")
-def default():
+@reports.route("/api/reports/test")
+def report_test():
     return send_file("reportTest.html")
 # endregion End Testing
 
 # region Routes
+
+@reports.route("/api/reports/")
+def reports_page():
+    return send_file("reports.html")
 
 
 @reports.route("/api/reports/incidents/totals", methods=["GET"])
@@ -314,6 +318,16 @@ def incidents_single(id):
 
 
 def calc_sla_target(priority, workaround, timeRaised : datetime):
+    """Calculate the SLA target time. 
+
+    Arguments:
+        priority {str} -- The priority, used to choose SLA target
+        workaround {boolean} -- True if an incident has a workaround, will adjust target times
+        timeRaised {datetime} -- The time the incident was raised
+
+    Returns:
+        datetime -- calculated SLA target time
+    """
     target = 0
     if workaround == True:
         target = 1
