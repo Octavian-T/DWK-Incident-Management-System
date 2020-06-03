@@ -191,15 +191,25 @@ def technicians_totals(id):
             "total_incidents": 0,
             "total_time_spent": 0
         }
-        for incident in query:
-            technician["total_incidents"] += 1
-            technician["total_time_spent"] += incident[1]
+        incidents = []
+        for incidentUpdate in query:
+            technician["total_incidents"] += 1 if incidentUpdate[0] in incidents else 0
+            technician["total_time_spent"] += incidentUpdate[1]
+            incidents.append(incidentUpdate[0])
         technicians["data"].append(technician)
     return create_response(technicians)
 
 
 @reports.route("/api/reports/sla/status/<id>", methods=["GET"])
 def get_SLA_status(id):
+    """This method returns the status and target SLA completion time
+
+    Arguments:
+        id -- incidentID, or 'all' to get all incidents status
+    Request Arguments:
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
+    """
     incidents = {"data": []}
     from_date = request.args.get('from', default="2000-01-01")
     to_date = request.args.get('to', default="2999-12-31")
@@ -218,20 +228,80 @@ def get_SLA_status(id):
             Database.Incident.status, Database.Incident.timeRaised).all()
         incidents_list = query
 
-    for username in incidents_list:
-        query = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.technicianID == username,
-                                               Database.IncidentUpdate.date >= from_date,
-                                               Database.IncidentUpdate.date <= to_date).with_entities(
-            Database.IncidentUpdate.technicianID, Database.IncidentUpdate.timeSpent).all()
-        technician = {
-            "technicianID": username,
-            "total_incidents": 0,
-            "total_time_spent": 0
+    for incident in incidents_list:
+        workaround = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.incidentID == incident[0],
+            Database.IncidentUpdate.updateType.in_(["workaround"])).order_by(
+            Database.IncidentUpdate.date.desc()).with_entities(
+            Database.IncidentUpdate.updateType).first()
+        
+        workaround = workaround is not None
+        status = incident[2]
+        target = calc_sla_target(incident[1], workaround, incident[3])
+        incident = {
+        "incidentID": incident[0],
+        "status": status,
+        "target_resolution": str(target)
         }
-        for incident in query:
-            technician["total_incidents"] += 1
-            technician["total_time_spent"] += incident[1]
-        incidents["data"].append(technician)
+        incidents["data"].append(incident)
+        
+    return create_response(incidents)
+
+
+@reports.route("/api/reports/sla/targets/<id>", methods=["GET"])
+def get_SLA_targets(id):    
+    """This method returns the status and target SLA completion versus the actual completion
+
+    Arguments:
+        id -- incidentID, or 'all' to get all incidents status
+    Request Arguments:
+        from -- from date, e.g. 2020-01-20
+        to -- to date, e.g. 2020-01-20%2023:59:59
+    """
+    incidents = {"data": []}
+    from_date = request.args.get('from', default="2000-01-01")
+    to_date = request.args.get('to', default="2999-12-31")
+
+    if id == "all":
+        query = Database.Incident.query.filter(
+            Database.Incident.timeRaised >= from_date,
+            Database.Incident.timeRaised <= to_date).with_entities(
+            Database.Incident.incidentID, Database.Incident.priority,
+            Database.Incident.status, Database.Incident.timeRaised,
+            Database.Incident.timeCompleted).all()
+        incidents_list = query
+    else:
+        query = Database.Incident.query.filter(
+            Database.Incident.incidentID == id).with_entities(
+            Database.Incident.incidentID, Database.Incident.priority,
+            Database.Incident.status, Database.Incident.timeRaised,
+            Database.Incident.timeCompleted).all()
+        incidents_list = query
+
+    for incident in incidents_list:
+        workaround = Database.IncidentUpdate.query.filter(Database.IncidentUpdate.incidentID == incident[0],
+            Database.IncidentUpdate.updateType.in_(["workaround", "fix"])).order_by(
+            Database.IncidentUpdate.date.desc()).with_entities(
+            Database.IncidentUpdate.updateType).first()
+        
+        workaround = workaround is not None
+        status = incident[2]
+        target = calc_sla_target(incident[1], workaround, incident[3])
+        within_sla = None
+        if incident[4] is not None:
+            within_sla = incident[4] < target
+
+        incident = {
+        "incidentID": incident[0],
+        "priority": incident[1],
+        "status": status,
+        "workaround": workaround,
+        "timeRaised": str(incident[3]),
+        "target_resolution": str(target),
+        "timeCompleted": str(incident[4]) if incident[4] is not None else None,
+        "within_sla": within_sla
+        }
+        incidents["data"].append(incident)
+        
     return create_response(incidents)
 
 
@@ -241,6 +311,15 @@ def incidents_single(id):
 
 # endregion
 # region utility methods
+
+
+def calc_sla_target(priority, workaround, timeRaised : datetime):
+    target = 0
+    if workaround == True:
+        target = 1
+    
+    sla_target = timeRaised + datetime.timedelta(0, SLA_targets[priority][target])
+    return sla_target
 
 
 def calc_ttr(timeRaised, timeCompleted):
