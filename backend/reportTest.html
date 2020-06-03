@@ -71,6 +71,17 @@
             request.setRequestHeader("accept", mime);
             request.send();
         };
+        function SLATargets(mime) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    document.getElementById("output").innerText = request.response;
+                }
+            };
+            request.open("GET", `/api/reports/sla/targets/all`, true);
+            request.setRequestHeader("accept", mime);
+            request.send();
+        };
     </script>
 </head>
 
@@ -93,6 +104,11 @@
         <label>Department totals</label>
         <button onclick="dept('text/csv')">CSV</button>&nbsp;
         <button onclick="dept('application/json')">JSON</button>&nbsp;
+    </div>
+    <div>
+        <label>SLA Targets</label>
+        <button onclick="SLATargets('text/csv')">CSV</button>&nbsp;
+        <button onclick="SLATargets('application/json')">JSON</button>&nbsp;
     </div>
     <br>
     <div id="output" style="font-family: 'Courier New', Courier, monospace;"></div>
