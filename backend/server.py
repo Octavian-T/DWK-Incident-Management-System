@@ -64,7 +64,9 @@ def get_incident(id):
                     'severity':incident.severity,
                     'impact':incident.impact,
                     'status':incident.status,
-                    'timeComplete': str(incident.timeCompleted)
+                    'timeComplete': str(incident.timeCompleted),
+                    'investigatingTechnicianID':incident.investigatingTechnicianID
+
                 }
             else:
                 return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
